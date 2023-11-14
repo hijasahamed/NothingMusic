@@ -3,9 +3,9 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/Fav_Audio_Model_provider.dart';
-import 'package:nothing_music/screens/favourite/play_all_favSong_screen.dart';
-import 'package:nothing_music/screens/favourite/favnowplaying.dart';
+import 'package:nothing_music/provider/fav_audio_model_provider.dart';
+import 'package:nothing_music/screens/favourite/play_all_fav_song_screen.dart';
+import 'package:nothing_music/screens/favourite/fav_now_playing.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -130,7 +130,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
-                          return MiniPlayerScreen(audioPlayer: _audioPlayer,songModelList: favouriteSongs,);
+                          return MiniPlayerScreen(audioPlayer: _audioPlayer,songModelList: favouriteSongs,);                          
                         })
                       );
                       favSongPlayAll(ctx);

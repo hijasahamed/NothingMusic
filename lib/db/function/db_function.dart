@@ -46,11 +46,9 @@ getAllFavSong()async{
 }
 
 removeFavSong(int id)async{
-  if(id != null){
     final favsongbox= await Hive.openBox<FavAudioModel>('Fav_song_db');
     await favsongbox.delete(id);
     getAllFavSong();
-  }
 }
 
 

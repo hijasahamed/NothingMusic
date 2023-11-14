@@ -4,17 +4,17 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/provider/Searched_Song_Provider.dart';
-import 'package:nothing_music/screens/Drawer/aboutscreen.dart';
-import 'package:nothing_music/screens/favourite/favouritescreen.dart';
-import 'package:nothing_music/screens/Playlists/playlistscreen.dart';
-import 'package:nothing_music/screens/Drawer/privacyandpolicy.dart';
-import 'package:nothing_music/screens/Songs/songsscreen.dart';
-import 'package:nothing_music/screens/Drawer/termsandconditions.dart';
-import 'package:nothing_music/screens/homescreen/search_song_playing_screen.dart';
+import 'package:nothing_music/provider/searched_song_provider.dart';
+import 'package:nothing_music/screens/Drawer/about_screen.dart';
+import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/favourite/favourite_screen.dart';
+import 'package:nothing_music/screens/Playlists/playlist_screen.dart';
+import 'package:nothing_music/screens/Drawer/privacy_policy_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/Drawer/terms_and_conditions_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
-import '../Intros/splashscreen.dart';
+import '../Intros/splash_screen.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -334,42 +334,44 @@ class search extends SearchDelegate {
                 final data = filteredSongs[index];
                 String namevalue = data.title;
                 if (namevalue.toLowerCase().contains(query.toLowerCase())) {
-                  return ListTile(
-                    onTap: () {
-                      context.read<SearchedSongProvider>().setId(data.image!);
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return SerachSongPlayingScreen(
-                          song: data,
-                          audioPlayer: _audioPlayer,
-                        );
-                      }));
-                    },
-                    title: Text(
-                      data.title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    leading: QueryArtworkWidget(
-                      id: data.image!,
-                      type: ArtworkType.AUDIO,
-                      artworkHeight: 90,
-                      artworkWidth: 60,
-                      artworkFit: BoxFit.fill,
-                      artworkQuality: FilterQuality.high,
-                      artworkBorder: BorderRadius.circular(5),
-                      quality: 100,
-                      nullArtworkWidget: Container(
-                        width: 60,
-                        height: 90,
-                        decoration: const BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            image: DecorationImage(
-                                image:
-                                    AssetImage('Assets/images/music logo.png'),
-                                fit: BoxFit.fill)),
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: () {
+                          context.read<SearchedSongProvider>().setId(data.image!);
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {                           
+                            return NowPlayingScreen(audioplayer: _audioPlayer, song: data, songsList: filteredSongs, songindex: index);
+                          }));
+                        },
+                        title: Text(
+                          data.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        leading: QueryArtworkWidget(
+                          id: data.image!,
+                          type: ArtworkType.AUDIO,
+                          artworkHeight: 90,
+                          artworkWidth: 60,
+                          artworkFit: BoxFit.fill,
+                          artworkQuality: FilterQuality.high,
+                          artworkBorder: BorderRadius.circular(5),
+                          quality: 100,
+                          nullArtworkWidget: Container(
+                            width: 60,
+                            height: 90,
+                            decoration: const BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(5)),
+                                image: DecorationImage(
+                                    image:
+                                        AssetImage('Assets/images/music logo.png'),
+                                    fit: BoxFit.fill)),
+                          ),
+                        ),
                       ),
-                    ),
+                      const Divider(),
+                    ],
                   );
                 } 
                 else {
@@ -410,13 +412,10 @@ class search extends SearchDelegate {
                           context.read<SearchedSongProvider>().setId(data.image!);
                             Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return SerachSongPlayingScreen(
-                              song: data,
-                              audioPlayer: _audioPlayer,
-                            );
+                            return NowPlayingScreen(audioplayer: _audioPlayer, song: data, songsList: filteredSongs, songindex: index);
                           }));
                         },
-                        title: Text(data.title),
+                        title: Text(data.title,maxLines: 1,overflow: TextOverflow.ellipsis,),
                         leading: QueryArtworkWidget(
                           id: data.image!,
                           type: ArtworkType.AUDIO,

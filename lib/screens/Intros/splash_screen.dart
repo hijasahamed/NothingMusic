@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nothing_music/screens/homescreen/homescreen.dart';
-import 'package:nothing_music/screens/Intros/welcomescreen.dart';
+import 'package:nothing_music/screens/homescreen/home_screen.dart';
+import 'package:nothing_music/screens/Intros/welcome_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Splashscreen extends StatefulWidget {

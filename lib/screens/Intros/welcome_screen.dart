@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nothing_music/db/function/db_function.dart';
-import 'package:nothing_music/screens/homescreen/homescreen.dart';
+import 'package:nothing_music/screens/homescreen/home_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,8 +71,6 @@ class _WelcomescreenState extends State<Welcomescreen> {
                       offset: Offset(83, -19 ),
                       child: Text('Music',style: TextStyle(color: Colors.white,fontSize: 35,fontWeight: FontWeight.w500,),),
                     ),
-                    // Image(image: AssetImage('images/equalizer.png'),height: 150,width: 150,), 
-                    // Lottie.asset('images/Animation - 1698655288561.json',height: 250,width: 300),
                   ],
                 )
               ),

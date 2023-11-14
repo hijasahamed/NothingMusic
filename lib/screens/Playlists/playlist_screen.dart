@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nothing_music/screens/Playlists/mostplayed.dart';
-import 'package:nothing_music/screens/Playlists/recentplayed.dart';
-import 'package:nothing_music/screens/Playlists/selectedplaylist.dart';
+import 'package:nothing_music/screens/Playlists/most_played_screen.dart';
+import 'package:nothing_music/screens/Playlists/recent_played_screen.dart';
+import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 
 class Playlistscreen extends StatelessWidget {
   const Playlistscreen({super.key});

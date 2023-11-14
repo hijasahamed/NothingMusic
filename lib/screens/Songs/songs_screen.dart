@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/Audio_model_provider.dart';
-import 'package:nothing_music/screens/Songs/nowplayingscreen.dart';
+import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
 
 class Songsscreen extends StatefulWidget {
@@ -32,7 +29,7 @@ class _SongsscreenState extends State<Songsscreen> {
     }
   }
 
-
+  List allSongs=[];
 
   @override
   Widget build(BuildContext context) {
@@ -70,20 +67,21 @@ class _SongsscreenState extends State<Songsscreen> {
                     );
                   }
                   songbox.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase())); //sorted songs in the list songbox//
+                  allSongs.addAll(songbox);
                   return ListView.separated(
                     itemBuilder: (ctx, index) {
                       final songs = songbox[index];
                       return ListTile(
-                        onTap: () {
-                          context.read<AudioModelProvider>().setId(songs.image!);
+                        onTap: () {                          
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(
                               song: songs,
                               audioplayer: _audioPlayer,
+                              songsList: allSongs,
+                              songindex: index,                              
                             );
                           }));
-                          playSong(songs.uri);
                         },
                         leading: QueryArtworkWidget(
                           id: songs.image!,
@@ -122,14 +120,10 @@ class _SongsscreenState extends State<Songsscreen> {
                         ),
                         trailing: IconButton(
                             onPressed: () {
-                              _showBottomSheet(context,songs);
+                              _showBottomSheet(context,songs,index);
                             },
                             icon: Icon(Icons.more_vert)
                         ),
-                        // trailing: Visibility( 
-                        //   visible: _currentPlayingIndex==index,
-                        //   child: LottieBuilder.asset('Assets/Animations/mini player wave animation.json',height: 20,width: 20,)
-                        // ),
                       );
                     },
                     separatorBuilder: ((context, index) => const SizedBox(
@@ -147,7 +141,7 @@ class _SongsscreenState extends State<Songsscreen> {
 
 
 
-  void _showBottomSheet(context,songs) {
+  void _showBottomSheet(context,songs,index) {
     showModalBottomSheet(
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
         shape: const RoundedRectangleBorder(
@@ -192,14 +186,14 @@ class _SongsscreenState extends State<Songsscreen> {
                 ),
                 ListTile(
                   onTap: () {
-                    context.read<AudioModelProvider>().setId(songs.image!);
-                    playSong(songs.uri);
                     Navigator.of(context).pop();
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return NowPlayingScreen(
                         song: songs,
                         audioplayer: _audioPlayer,
+                        songsList: allSongs,
+                        songindex: index,                        
                       );
                     }));
                   },
@@ -212,7 +206,7 @@ class _SongsscreenState extends State<Songsscreen> {
                 ),
                 ListTile(
                   onTap: () {
-                    addToFavDB(songs);
+                    addToFavDBBottomSheet(songs, context);
                   },
                   leading: Icon(
                     Icons.favorite_rounded,
@@ -244,22 +238,5 @@ class _SongsscreenState extends State<Songsscreen> {
           );
         });
   }
-
-
-  addToFavDB(songs)async{
-    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');
-    if(!favsongbox.values.any((element) => element.uri == songs.uri)){
-      final _favSong=FavAudioModel(image: songs.image!, title: songs.title, artist: songs.artist, uri: songs.uri);
-      addToFav(_favSong);
-      favAddedsnackbar(context);
-      Navigator.pop(context);
-    }
-    else{
-      favAlreadyAddedSnackbar(context);
-      Navigator.pop(context);
-    }  
-  }
-
-
 
 }

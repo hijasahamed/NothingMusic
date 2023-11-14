@@ -1,54 +1,25 @@
-
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:nothing_music/db/function/db_function.dart';
-import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/Audio_model_provider.dart';
+import 'package:nothing_music/provider/fav_audio_model_provider.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
-favAddedsnackbar(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Added To Favourites',style: TextStyle(fontSize: 15),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
+class FavNowPlayingScreen extends StatefulWidget {
+  const FavNowPlayingScreen({super.key,required this.song,required this.audioplayer});
 
-      )
-    );
-}
-favAlreadyAddedSnackbar(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Song Already In Favourites',style: TextStyle(fontSize: 15),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
-      )
-    );
-}
-
-class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen({super.key,required this.audioplayer,required this.song});
- 
-
- final AudioModel song;
- final AudioPlayer audioplayer;
- 
+  final FavAudioModel song;
+  final AudioPlayer audioplayer;
 
   @override
-  State<NowPlayingScreen> createState() => _NowPlayingScreenState();
+  State<FavNowPlayingScreen> createState() => _FavNowPlayingScreenState();
 }
 
-class _NowPlayingScreenState extends State<NowPlayingScreen> {
+class _FavNowPlayingScreenState extends State<FavNowPlayingScreen> {
 
   bool _isPlaying = true;
   Duration duration=Duration.zero;
   Duration position=Duration.zero;
-  bool _isFavourite=false;
 
   @override
   void initState() {
@@ -60,8 +31,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     try{
       widget.audioplayer.setAudioSource(AudioSource.uri(Uri.parse(widget.song.uri!)));
       widget.audioplayer.play(); 
-      _isPlaying=true; 
-
+      _isPlaying=true;
+      
       listenToEvent();
 
     }
@@ -80,7 +51,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     });
   }
 
-    void listenToEvent() {
+  void listenToEvent() {
     widget.audioplayer.playerStateStream.listen((state) {
       if (state.playing) {
         setState(() {
@@ -97,7 +68,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         });
       }
     });
-  }
+  } 
 
   @override
   void dispose() {
@@ -107,17 +78,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black ,
+        backgroundColor: Colors.black,
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Column(
             children: [
-
               Flexible(
                 flex: 5,
                 child: Center( 
@@ -162,32 +132,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 flex: 3,
                 child: Container( 
                   child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15,left: 15),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween ,
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.white24,
-                              child: IconButton(
-                                onPressed: (){}, 
-                                icon: Icon(Icons.playlist_add ,color: Colors.white,),                            
-                              ),
-                            ),
-                            CircleAvatar(
-                              backgroundColor: Colors.white24,
-                              child: IconButton(
-                                onPressed: (){
-                                  addToFavDB(widget.song);
-                                }, 
-                                icon: Icon(Icons.favorite,color: _isFavourite ? Colors.red : Colors.white),                            
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 25), 
+                    children: [ 
                       Wrap(
                         spacing: 30 ,
                         children: [
@@ -213,7 +158,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                   else{
                                     widget.audioplayer.play();
                                   }
-                                  _isPlaying = !_isPlaying; 
+                                  _isPlaying = !_isPlaying;
                                 });
                               }, 
                               icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
@@ -241,7 +186,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     );
   }
 
-  formatTime(Duration duration){
+
+
+    formatTime(Duration duration){
     String twoDigits(int n) => n.toString().padLeft(2,'0');
     final hours = twoDigits(duration.inHours);
     final minutes = twoDigits(duration.inMinutes.remainder(60));
@@ -254,23 +201,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     ].join(':');
   }
 
-  addToFavDB(song)async{
-    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');
-    if(!favsongbox.values.any((element) => element.uri == song.uri)){
-      final _favSong=FavAudioModel(image: widget.song.image!, title: widget.song.title, artist: widget.song.artist, uri: widget.song.uri,id: widget.song.id);
-      addToFav(_favSong);
-      setState(() {
-        _isFavourite=true;
-      });
-      favAddedsnackbar(context);
-    }
-    else{
-      setState(() {
-        _isFavourite=true;
-      });
-      favAlreadyAddedSnackbar(context);
-    }     
-  }
 
 
 }
@@ -279,10 +209,11 @@ class ArtWorkWidget extends StatelessWidget {
   const ArtWorkWidget({
     super.key,
   });
+
   @override
   Widget build(BuildContext context) {
     return QueryArtworkWidget(
-      id: context.watch<AudioModelProvider>().id, 
+      id: context.watch<FavAudioModelProvider>().id, 
       type: ArtworkType.AUDIO,
       artworkHeight: 340,
       artworkWidth: 360,
