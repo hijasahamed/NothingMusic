@@ -4,7 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/audio_model_provider.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -12,10 +12,9 @@ import 'package:provider/provider.dart';
 
 
 class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen({super.key,required this.audioplayer,required this.song,required this.songsList,required this.songindex});
+  const NowPlayingScreen({super.key,required this.audioplayer,required this.songsList,required this.songindex});
  
 
- final AudioModel song;
  final AudioPlayer audioplayer;
  final List songsList;
  final int songindex;
@@ -31,8 +30,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   Duration duration=Duration.zero;
   Duration position=Duration.zero;
   bool _isFavourite=false;
+  bool _isshuffle=false;
 
-  List<AudioSource> songlist=[];
+  List<AudioSource> allSonglist=[];
   int currentindex=0;
 
   @override
@@ -47,13 +47,13 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     }
     try{
       for(var elements in widget.songsList){
-        songlist.add(AudioSource.uri(
-          Uri.parse(elements.uri!)
+        allSonglist.add(AudioSource.uri(
+          Uri.parse(elements.uri)
         ));
       }
-      listenToSongIndex();
-      widget.audioplayer.setAudioSource(ConcatenatingAudioSource(children: songlist),initialIndex: widget.songindex);
+      widget.audioplayer.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex);
       widget.audioplayer.play();
+      listenToSongIndex();
       listenToEvent();
       
     }
@@ -65,9 +65,11 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
     widget.audioplayer.durationStream.listen((d) {
       if(mounted){
-        setState(() {
-        duration=d!;
+        if (d != null) {
+      setState(() {
+        duration = d;
       });
+    }
       }
     });
     widget.audioplayer.positionStream.listen((p) {
@@ -108,13 +110,27 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           if(event != null && event >=0 && event <widget.songsList.length){
             setState(() {
               currentindex=event;
-              context.read<AudioModelProvider>().setId(widget.songsList[currentindex].image!);
+              context.read<ArtWorkProvider>().setId(widget.songsList[currentindex].image!);
+              var recentsong= AudioModel(
+                image: widget.songsList[currentindex].image, 
+                title: widget.songsList[currentindex].title, 
+                artist: widget.songsList[currentindex].artist, 
+                uri: widget.songsList[currentindex].uri);
+                
+                recentPlayedAdding(recentsong);
+
+              _isFavourite = isSongInDatabase(widget.songsList[currentindex].uri);
             });
           }
         }
       },
     );
   }
+
+  bool isSongInDatabase(String uri) {
+  final favSongBox = Hive.box<FavAudioModel>('fav_song_db');
+  return favSongBox.values.any((element) => element.uri == uri);
+}
 
   @override
   void dispose() {
@@ -130,54 +146,48 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         backgroundColor: Colors.black ,
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-
-              Flexible(
-                flex: 5,
-                child: Center( 
-                  child: const ArtWorkWidget(),
-                ),
-              ),
-
-              Flexible(
-                flex: 2,
-                child: Container(
-                  child: Center(
-                    child: Column(
-                      children: [
-                         Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white,fontSize: 20  ),),
-                         SizedBox(height: 10,),
-                         Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.white,fontSize: 15 )),
-                         SizedBox(height: 30,),                       
-                        Row(
-                          children: [
-                            Text(formatTime(position)),
-                            Expanded(
-                              child: Slider(
-                                min: 0,
-                                max: duration.inSeconds.toDouble(),
-                                value: position.inSeconds.toDouble(), 
-                                onChanged: (value)async{
-                                  final position = Duration(seconds: value.toInt());
-                                  await widget.audioplayer.seek(position);
-                                }
-                              )
-                            ),
-                            Text(formatTime(duration)),
-                          ],
-                        )
-                      ],
-                    ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+          
+                Container(                  
+                  child: Center( 
+                    child: const ArtWorkWidget(),
                   ),
                 ),
-              ),
-
-              Flexible(
-                flex: 3,
-                child: Container( 
+          
+                Container(                  
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                       Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis, style: TextStyle(color: Colors.white,fontSize: 20  ),),
+                       SizedBox(height: 10,),
+                       Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,style: TextStyle(color: Colors.white,fontSize: 15 )),
+                       SizedBox(height: 30,),                       
+                      Row(
+                        children: [
+                          Text(formatTime(position)),
+                          Expanded(
+                            child: Slider(
+                              min: 0,
+                              max: duration.inSeconds.toDouble(),
+                              value: position.inSeconds.toDouble(), 
+                              onChanged: (value)async{
+                                final position = Duration(seconds: value.toInt());
+                                await widget.audioplayer.seek(position);
+                              }
+                            )
+                          ),
+                          Text(formatTime(duration)),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+          
+                Container( 
                   child: Column(
                     children: [
                       Padding(
@@ -188,15 +198,18 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                             CircleAvatar(
                               backgroundColor: Colors.white24,
                               child: IconButton(
-                                onPressed: (){}, 
+                                onPressed: (){
+                                  print(widget.songsList[currentindex].id);
+                                }, 
                                 icon: Icon(Icons.playlist_add ,color: Colors.white,),                            
                               ),
                             ),
                             CircleAvatar(
                               backgroundColor: Colors.white24,
                               child: IconButton(
-                                onPressed: (){
-                                  addToFavDbNowPlaying(widget.song,);
+                                onPressed: (){                                 
+                                  addToFavDbNowPlaying(widget.songsList[currentindex],context);
+                                                                 
                                 }, 
                                 icon: Icon(Icons.favorite,color: _isFavourite ? Colors.red : Colors.white),                            
                               ),
@@ -209,8 +222,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         spacing: 30 ,
                         children: [
                           IconButton(
-                            onPressed: (){}, 
-                            icon: Icon(Icons.shuffle,color: Colors.white,)
+                            onPressed: (){
+                              // shuffleSongs();                               
+                            }, 
+                            icon: Icon(Icons.shuffle,color: _isshuffle ? Colors.blue : Colors.white)
                           ),
                           IconButton(
                             onPressed: (){
@@ -255,10 +270,10 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                       ),
                     ],
                   ),
-                )
-              ),
-
-            ],
+                ),
+          
+              ],
+            ),
           ),
         ),
       ),
@@ -266,23 +281,34 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   }
 
 
-  addToFavDbNowPlaying(song)async{
-    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');
+  addToFavDbNowPlaying(song,context)async{
+    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');    
     if(!favsongbox.values.any((element) => element.uri == song.uri)){
-      final _favSong=FavAudioModel(image: widget.song.image!, title: widget.song.title, artist: widget.song.artist, uri: widget.song.uri,id: widget.song.id);
+      final _favSong=FavAudioModel(image: song.image!, title: song.title, artist: song.artist, uri: song.uri); 
       addToFav(_favSong);
       setState(() {
         _isFavourite=true;
       });
-      favAddedsnackbar(context);
+      favAddedSnackbar(context);
+      print('id is ${song.id}');
     }
     else{
-      setState(() {
-        _isFavourite=true;
-      });
       favAlreadyAddedSnackbar(context);
     }     
   }
+
+  // void shuffleSongs() {
+  //   if (allSonglist.isNotEmpty) {
+  //     setState(() {
+  //       _isshuffle=true;
+  //     });
+  //     allSonglist.shuffle();
+  //     widget.audioplayer.setAudioSource(ConcatenatingAudioSource(children: allSonglist), initialIndex: 0);
+  //     widget.audioplayer.play();
+  //   }
+  // }
+
+
 }
 
 
@@ -293,7 +319,7 @@ class ArtWorkWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QueryArtworkWidget(
-      id: context.watch<AudioModelProvider>().id, 
+      id: context.watch<ArtWorkProvider>().id, 
       type: ArtworkType.AUDIO,
       artworkHeight: 340,
       artworkWidth: 360,

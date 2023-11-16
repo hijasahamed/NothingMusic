@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nothing_music/screens/Playlists/most_played_screen.dart';
+import 'package:nothing_music/screens/Playlists/playlist_created_screen.dart';
 import 'package:nothing_music/screens/Playlists/recent_played_screen.dart';
 import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 
@@ -11,15 +12,13 @@ class Playlistscreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child: Column(
-            children: [
-          
-          
-              Flexible(
-                flex: 3,
-                child: Container(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(7),
+            child: Column(
+              children: [
+
+                Container(                   
                   child: Column(
                     children: [
                       Row(
@@ -39,14 +38,20 @@ class Playlistscreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Recentplayed();}));
                               },
-                              child: Center(
-                                  child: Text(
-                                'Recent Played',
-                                style: TextStyle(
+                              child: Container(
+                                height: 160,
+                                width: double.infinity,
+                                color: Colors.black12 ,
+                                child: const Center(
+                                  child:  Text(
+                                    'Recent Played',
+                                    style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w800,
                                     fontSize: 20),
-                              )),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                           Ink(
@@ -63,14 +68,19 @@ class Playlistscreen extends StatelessWidget {
                               onTap: () {
                                 Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Mostplayed();})); 
                               },
-                              child: Center(
-                                  child: Text(
-                                'Most Played',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 20),
-                              )),
+                              child: Container(
+                                height: double.infinity,
+                                width: double.infinity,
+                                color: Colors.black12 ,
+                                child: Center(
+                                    child: Text(
+                                  'Most Played',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 20),
+                                )),
+                              ),
                             ),
                           ),
                         ],
@@ -82,114 +92,18 @@ class Playlistscreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
-              ),
-              
-              
-              Flexible(
-                flex: 6,
-                child: Container(
-                  height: double.infinity,
-                  width: double.infinity , 
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 1.5
-                    ),
-                    itemBuilder: (ctx, index) {                                              
-                      return Ink(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Color.fromARGB(255, 68, 21, 21),
-                        ),
-                        child: InkWell(                            
-                          splashColor: Colors.white12,
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Selectedplaylist();})); 
-                          },
-                          child: Column(
-                            children: [                             
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: PopupMenuButton(
-                                  color: Color.fromARGB(255, 60, 58, 58), 
-                                  elevation: 20, 
-                                  onSelected: (value) {
-                                    if (value == 'edit') {
-                                    
-                                    } else if (value == 'delete') {
-                                    
-                                    }
-                                  },
-                                  icon: Icon(
-                                    Icons.more_vert,
-                                    color: Colors.white,
-                                  ),
-                                  itemBuilder: (BuildContext context) {
-                                    return [
-                                      PopupMenuItem(
-                                        value: 'edit',
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start ,
-                                          children: [
-                                            Icon(Icons.edit,color: Colors.green,), 
-                                            Text('Edit',style: TextStyle(color: Colors.white)),
-                                          ],
-                                        ),
-                                      ),
-                                      PopupMenuItem(
-                                        value: 'delete',
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start ,
-                                          children: [
-                                            Icon(Icons.delete,color: Colors.red,),
-                                            Text('Delete',style: TextStyle(color: Colors.white),),
-                                          ],
-                                        ),
-                                      ),
-                                    ]; 
-                                  },
-                                ),
-                              ),
-                              Text('Playlist ${index + 1}',style: TextStyle(fontSize: 20, color: Colors.white),),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: 3,
-                  ),
                 ),
-              ),
-        
-        
-             /* Flexible(
-                flex: 6,
-                child: ListView.separated(
-                  itemBuilder: (context,index){
-                   return Container(
-                      height: 75, 
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(100),
-                        color: Color.fromARGB(255, 68, 21, 21),
-                      ),
-                    );
-                  }, 
-                  separatorBuilder: (context,index){
-                    return Divider();
-                  }, 
-                  itemCount: 3
-                ),
-              ),*/
               
-                
-              Flexible(
-                flex: 1,
-                child: Container(
+
+                Container(
+                  height: 460,
                   width: double.infinity,
-                  height: 70,
+                  child: PlaylistCreatedScreen(), 
+                ),
+  
+                Container(
+                  width: double.infinity,
+                  height: 72,                
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Ink(
@@ -213,10 +127,10 @@ class Playlistscreen extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
-          
-          
-            ],
+            
+            
+              ],
+            ),
           ),
         )
       ),

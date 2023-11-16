@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class FavAudioModelProvider  with ChangeNotifier{
+class ArtWorkProvider with ChangeNotifier {
   int _id = 0;
 
   int get id => _id;

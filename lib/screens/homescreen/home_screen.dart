@@ -4,7 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/provider/searched_song_provider.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Drawer/about_screen.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_screen.dart';
@@ -27,6 +27,7 @@ class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
     getAllFavSong();
+    gettAllRecentSongs();
     super.initState();
   }
 
@@ -338,10 +339,10 @@ class search extends SearchDelegate {
                     children: [
                       ListTile(
                         onTap: () {
-                          context.read<SearchedSongProvider>().setId(data.image!);
+                          context.read<ArtWorkProvider>().setId(data.image!);
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {                           
-                            return NowPlayingScreen(audioplayer: _audioPlayer, song: data, songsList: filteredSongs, songindex: index);
+                            return NowPlayingScreen(audioplayer: _audioPlayer, songsList: filteredSongs, songindex: index);
                           }));
                         },
                         title: Text(
@@ -380,7 +381,8 @@ class search extends SearchDelegate {
               },
               itemCount: filteredSongs.length,
             );
-          } else {
+          } 
+          else {
             return SizedBox();
           }
         });
@@ -398,6 +400,15 @@ class search extends SearchDelegate {
                     .toLowerCase()
                     .contains(query.toLowerCase().trim()))
                 .toList();
+            if(filteredSongs.isEmpty){
+              return Center(
+                child: Column(
+                children: [
+                  LottieBuilder.asset('Assets/Animations/no searched song animation.json',height: 150,width: 150,), 
+                  Text('Sorry Searched Song Not Found',style: TextStyle(fontWeight: FontWeight.w500),),
+                ],
+              ),); 
+            }    
             return ListView.builder(
               itemBuilder: (ctx, index) {
                 final data = filteredSongs[index];
@@ -409,10 +420,10 @@ class search extends SearchDelegate {
                     children: [
                       ListTile(
                         onTap: () {
-                          context.read<SearchedSongProvider>().setId(data.image!);
+                          context.read<ArtWorkProvider>().setId(data.image!);
                             Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return NowPlayingScreen(audioplayer: _audioPlayer, song: data, songsList: filteredSongs, songindex: index);
+                            return NowPlayingScreen(audioplayer: _audioPlayer,songsList: filteredSongs, songindex: index);
                           }));
                         },
                         title: Text(data.title,maxLines: 1,overflow: TextOverflow.ellipsis,),

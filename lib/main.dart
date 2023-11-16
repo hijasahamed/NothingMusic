@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/audio_model_provider.dart';
-import 'package:nothing_music/provider/fav_audio_model_provider.dart';
-import 'package:nothing_music/provider/searched_song_provider.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Intros/splash_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -21,9 +19,7 @@ Future<void> main() async{
     runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AudioModelProvider()),
-        ChangeNotifierProvider(create: (context) => FavAudioModelProvider()),
-        ChangeNotifierProvider(create: (context) => SearchedSongProvider()),
+        ChangeNotifierProvider(create: (context) => ArtWorkProvider()),
       ],
       child: const MyApp(),
     ),

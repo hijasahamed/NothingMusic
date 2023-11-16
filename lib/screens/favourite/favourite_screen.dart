@@ -3,9 +3,9 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/provider/fav_audio_model_provider.dart';
-import 'package:nothing_music/screens/favourite/play_all_fav_song_screen.dart';
-import 'package:nothing_music/screens/favourite/fav_now_playing.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,9 @@ class _FavouritescreenState extends State<Favouritescreen> {
       print('error');
     }
   }
+
+  List allSongs=[];
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,93 +63,67 @@ class _FavouritescreenState extends State<Favouritescreen> {
                 ),
               );
             }
-            return Stack(
-              children: [
-                ListView.separated(
-                  itemBuilder: (ctx, index) {
-                    final data=favouriteSongs[index];             
-                    return ListTile(
-                      onTap: (){
-                        context.read<FavAudioModelProvider>().setId(data.image!);
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context){
-                            return FavNowPlayingScreen(song: data, audioplayer: _audioPlayer);
-                          })
-                        );
-                        playSong(data.uri);
-                      },
-                      leading: QueryArtworkWidget(
-                        id: data.image!,
-                        type: ArtworkType.AUDIO,
-                        artworkHeight: 90,
-                        artworkWidth: 60,
-                        artworkFit: BoxFit.fill,
-                        artworkQuality: FilterQuality.high,
-                        artworkBorder: BorderRadius.circular(5),
-                        quality: 100,
-                        nullArtworkWidget: Container(
-                          width: 60,
-                          height: 90,
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                      'Assets/images/music logo.png'),
-                                  fit: BoxFit.fill)),
-                        ),
-                      ),
-                      title: Text(
-                        data.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white,),
-                      ),
-                      subtitle: Text(
-                        data.artist,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      trailing: IconButton(
-                          splashRadius: 25,
-                          onPressed: () {
-                            FavBottomSheeet(context,data);                    
-                          },
-                          icon: const Icon(
-                            Icons.more_vert,
-                            color: Colors.white,
-                          )),
-                    );
+            allSongs.addAll(favouriteSongs);
+            return ListView.separated(
+              itemBuilder: (ctx, index) {
+                final  data=favouriteSongs[index];           
+                return ListTile(
+                  onTap: (){
+                    context.read<ArtWorkProvider>().setId(data.image!);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context){
+                        return NowPlayingScreen(audioplayer: _audioPlayer, songsList: allSongs, songindex: index);
+                      })
+                    );                    
                   },
-                  separatorBuilder: ((context, index) =>const SizedBox(
-                        height: 20,
-                      )),
-                  itemCount: favouriteSongs.length,
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context){
-                          return MiniPlayerScreen(audioPlayer: _audioPlayer,songModelList: favouriteSongs,);                          
-                        })
-                      );
-                      favSongPlayAll(ctx);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)), 
-                      margin: const EdgeInsets.fromLTRB(0, 0, 15, 15),
-                      child:  CircleAvatar(                       
-                        radius: 35,
-                        backgroundColor: Color.fromARGB(255, 44, 43, 43),                         
-                        child: LottieBuilder.asset('Assets/Animations/playallfavsong animation.json'),
-                      ),
+                  leading: QueryArtworkWidget(
+                    id: data.image!,
+                    type: ArtworkType.AUDIO,
+                    artworkHeight: 90,
+                    artworkWidth: 60,
+                    artworkFit: BoxFit.fill,
+                    artworkQuality: FilterQuality.high,
+                    artworkBorder: BorderRadius.circular(5),
+                    quality: 100,
+                    nullArtworkWidget: Container(
+                      width: 60,
+                      height: 90,
+                      decoration: const BoxDecoration(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(5)),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  'Assets/images/music logo.png'),
+                              fit: BoxFit.fill)),
                     ),
                   ),
-                ),
-              ],
+                  title: Text(
+                    data.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white,),
+                  ),
+                  subtitle: Text(
+                    data.artist,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: IconButton(
+                      splashRadius: 25,
+                      onPressed: () {
+                        favBottomSheeet(context,data,index);                    
+                      },
+                      icon: const Icon(
+                        Icons.more_vert,
+                        color: Colors.white,
+                      )),
+                );
+              },
+              separatorBuilder: ((context, index) =>const SizedBox(
+                    height: 20,
+                  )),
+              itemCount: favouriteSongs.length,
             );
           }
         )
@@ -157,7 +134,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
 
 
 
-  FavBottomSheeet(context,data){
+  favBottomSheeet(context,data,index){
     showModalBottomSheet(
       backgroundColor: Color.fromARGB(255, 35, 35, 35),
       shape: const RoundedRectangleBorder(
@@ -202,12 +179,11 @@ class _FavouritescreenState extends State<Favouritescreen> {
               ),
               ListTile(
                 onTap: () {
-                  context.read<FavAudioModelProvider>().setId(data.image!);
-                  playSong(data.uri);
+                  context.read<ArtWorkProvider>().setId(data.image!); 
                   Navigator.of(context).pop();
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return FavNowPlayingScreen(song: data, audioplayer: _audioPlayer);
+                    return  NowPlayingScreen(audioplayer: _audioPlayer, songsList: allSongs, songindex: index);
                   }));
                 },
                 leading: const Icon(
@@ -227,12 +203,10 @@ class _FavouritescreenState extends State<Favouritescreen> {
                     style: TextStyle(color: Colors.white, fontSize: 20)),
               ),
               ListTile(
-                onTap: () {
-                  if(data != null){
-                    removeFavSong(data.id,);
+                onTap: () {                
+                    removeFavSong(data.id);
                     Navigator.of(context).pop();
                     favRemovedsnackbar(context);
-                  }
                 },
                 leading:const Icon(
                   Icons.delete,
@@ -248,29 +222,6 @@ class _FavouritescreenState extends State<Favouritescreen> {
   }
 
 
-  favRemovedsnackbar(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Song Removed From Favourites',style: TextStyle(fontSize: 15),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
-
-      )
-    );
-  }
-
-  favSongPlayAll(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Playing All Favourite Songs',style: TextStyle(fontSize: 15,),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
-      )
-    );
-  }
-
-
+  
 
 }

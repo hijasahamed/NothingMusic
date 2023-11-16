@@ -1,7 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
+import 'package:nothing_music/db/function/db_function.dart';
+import 'package:nothing_music/db/model/Audio_model/db_model.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:provider/provider.dart';
 
-class Mostplayed extends StatelessWidget {
+class Mostplayed extends StatefulWidget {
   const Mostplayed({super.key});
+
+  @override
+  State<Mostplayed> createState() => _MostplayedState();
+}
+
+class _MostplayedState extends State<Mostplayed> {
+
+  final AudioPlayer _audioPlayer = AudioPlayer();
+
+  List allsongs=[];
 
   @override
   Widget build(BuildContext context) {
@@ -12,35 +30,99 @@ class Mostplayed extends StatelessWidget {
         backgroundColor: const Color.fromARGB(255, 35, 35, 35),
       ),
       body: SafeArea(
-        child: Flexible(
-          child: Container(
-            child: ListView.separated(
-            itemBuilder: (ctx, index) {
-              return ListTile(
-                leading: Container(
-                  width: 60,
-                  height: 90,
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      image: DecorationImage(
-                          image: AssetImage('Assets/images/uyiril.jpg'),
-                          fit: BoxFit.fill)),
-                ),
-                title: Text(
-                  'uyiril thodum - kumbalangi nights',
-                  style: TextStyle(color: Colors.white),
-                ),
-                subtitle: Text(
-                  'Susin Shyam',
-                  style: TextStyle(color: Colors.white),
-                ), 
-              );
-            },
-            separatorBuilder: ((context, index) => SizedBox(
-                  height: 20,
-                )),
-            itemCount: 1),
-          )
+        child: Scrollbar( 
+          thickness: 2,
+          radius: Radius.circular(20),
+          child: ValueListenableBuilder(
+            valueListenable: MostplayedSongNotifier, 
+            builder: (BuildContext ctx,List<AudioModel>recentsongslist,Widget? child){
+              final temp=recentsongslist.reversed.toList();
+              recentsongslist=temp.toList();
+              if(recentsongslist.isEmpty){
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      LottieBuilder.asset(
+                        'Assets/Animations/no result animation.json',
+                        height: 150,
+                      ),
+                      const Text(
+                        'No Recent Songs',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              }
+              recentsongslist=recentsongslist.take(30).toList();
+              allsongs.clear();
+              allsongs.addAll(recentsongslist);            
+              return ListView.separated(
+                itemBuilder: ((context, index) {
+                  final data=recentsongslist[index];
+                  return ListTile(
+                    onTap: () {
+                      context.read<ArtWorkProvider>().setId(data.image!);
+                      Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context){
+                          return NowPlayingScreen(audioplayer: _audioPlayer, songsList: allsongs, songindex: index);
+                        }));
+                    },                 
+                    leading: QueryArtworkWidget(
+                      id: data.image!,
+                      type: ArtworkType.AUDIO,
+                      artworkHeight: 90,
+                      artworkWidth: 60,
+                      artworkFit: BoxFit.fill,
+                      artworkQuality: FilterQuality.high,
+                      artworkBorder: BorderRadius.circular(5),
+                      quality: 100,
+                      nullArtworkWidget: Container(
+                        width: 60,
+                        height: 90,
+                        decoration: const BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(5)),
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    'Assets/images/music logo.png'),
+                                fit: BoxFit.fill)),
+                      ),
+                    ),
+                    title: Text(
+                      data.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.white,),
+                    ),
+                    subtitle: Text(
+                      data.artist,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    trailing: IconButton(
+                        splashRadius: 25,
+                        onPressed: () {
+                                            
+                        },
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Colors.white,
+                        )),
+                  );                
+                }), 
+                separatorBuilder: (ctx,index){
+                  return Divider();
+                }, 
+                itemCount: recentsongslist.length
+              ); 
+            }
+          ),
         ),
       ),
     );

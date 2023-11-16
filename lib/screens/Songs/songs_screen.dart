@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
+import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
 
 class Songsscreen extends StatefulWidget {
@@ -14,6 +18,8 @@ class Songsscreen extends StatefulWidget {
   @override
   State<Songsscreen> createState() => _SongsscreenState();
 }
+
+List allSongs=[];
 
 class _SongsscreenState extends State<Songsscreen> {
 
@@ -29,7 +35,8 @@ class _SongsscreenState extends State<Songsscreen> {
     }
   }
 
-  List allSongs=[];
+  
+  
 
   @override
   Widget build(BuildContext context) {
@@ -41,11 +48,11 @@ class _SongsscreenState extends State<Songsscreen> {
           child: FutureBuilder<Box<AudioModel>>(
               future: Hive.openBox<AudioModel>('songs_db'),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+               if (snapshot.connectionState == ConnectionState.waiting) {
                   return CircularProgressIndicator();
                 }
                 if (snapshot.hasData) {
-                  final songbox = snapshot.data!.values.toList();
+                  final songbox = snapshot.data!.values.toList();         
                   if (songbox.isEmpty) {
                     return Center(
                       child: Column(
@@ -72,11 +79,11 @@ class _SongsscreenState extends State<Songsscreen> {
                     itemBuilder: (ctx, index) {
                       final songs = songbox[index];
                       return ListTile(
-                        onTap: () {                          
+                        onTap: () {
+                          context.read<ArtWorkProvider>().setId(songs.image!);                         
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return NowPlayingScreen(
-                              song: songs,
+                            return NowPlayingScreen(                              
                               audioplayer: _audioPlayer,
                               songsList: allSongs,
                               songindex: index,                              
@@ -190,7 +197,6 @@ class _SongsscreenState extends State<Songsscreen> {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return NowPlayingScreen(
-                        song: songs,
                         audioplayer: _audioPlayer,
                         songsList: allSongs,
                         songindex: index,                        
