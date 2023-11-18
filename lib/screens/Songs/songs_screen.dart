@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';

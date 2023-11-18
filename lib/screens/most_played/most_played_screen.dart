@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +21,8 @@ class _MostplayedState extends State<Mostplayed> {
 
   List allsongs=[];
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,10 +37,10 @@ class _MostplayedState extends State<Mostplayed> {
           radius: Radius.circular(20),
           child: ValueListenableBuilder(
             valueListenable: MostplayedSongNotifier, 
-            builder: (BuildContext ctx,List<AudioModel>recentsongslist,Widget? child){
-              final temp=recentsongslist.reversed.toList();
-              recentsongslist=temp.toList();
-              if(recentsongslist.isEmpty){
+            builder: (BuildContext ctx,List<AudioModel>mostPlayedsongslist,Widget? child){
+              final temp=mostPlayedsongslist.reversed.toList();
+              mostPlayedsongslist=temp.toList();
+              if(mostPlayedsongslist.isEmpty){ 
                 return Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -48,7 +50,7 @@ class _MostplayedState extends State<Mostplayed> {
                         height: 150,
                       ),
                       const Text(
-                        'No Recent Songs',
+                        'No Mostplayed Songs', 
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w500,
@@ -58,12 +60,12 @@ class _MostplayedState extends State<Mostplayed> {
                   ),
                 );
               }
-              recentsongslist=recentsongslist.take(30).toList();
+              mostPlayedsongslist=mostPlayedsongslist.take(30).toList();
               allsongs.clear();
-              allsongs.addAll(recentsongslist);            
+              allsongs.addAll(mostPlayedsongslist);            
               return ListView.separated(
                 itemBuilder: ((context, index) {
-                  final data=recentsongslist[index];
+                  final data=mostPlayedsongslist[index];
                   return ListTile(
                     onTap: () {
                       context.read<ArtWorkProvider>().setId(data.image!);
@@ -108,7 +110,7 @@ class _MostplayedState extends State<Mostplayed> {
                     trailing: IconButton(
                         splashRadius: 25,
                         onPressed: () {
-                                            
+                          mostPlayedBottomSheeet(context, data, index,_audioPlayer,allsongs);                 
                         },
                         icon: const Icon(
                           Icons.more_vert,
@@ -119,7 +121,7 @@ class _MostplayedState extends State<Mostplayed> {
                 separatorBuilder: (ctx,index){
                   return Divider();
                 }, 
-                itemCount: recentsongslist.length
+                itemCount: mostPlayedsongslist.length
               ); 
             }
           ),

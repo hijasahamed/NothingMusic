@@ -5,7 +5,11 @@ import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/most_played/most_played_functions.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
+import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 
@@ -96,7 +100,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       }
       if (state.processingState == ProcessingState.completed) {
         setState(() {
-          _isPlaying = false;
+          _isPlaying = false; 
+
         });
       }
       }
@@ -111,14 +116,18 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
             setState(() {
               currentindex=event;
               context.read<ArtWorkProvider>().setId(widget.songsList[currentindex].image!);
+              
               var recentsong= AudioModel(
                 image: widget.songsList[currentindex].image, 
                 title: widget.songsList[currentindex].title, 
                 artist: widget.songsList[currentindex].artist, 
                 uri: widget.songsList[currentindex].uri);
-                
                 recentPlayedAdding(recentsong);
 
+                addToMostPlayedList(recentsong); 
+
+
+                                   
               _isFavourite = isSongInDatabase(widget.songsList[currentindex].uri);
             });
           }

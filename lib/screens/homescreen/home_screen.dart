@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Drawer/about_screen.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/most_played/most_played_functions.dart';
+import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:nothing_music/screens/favourite/favourite_screen.dart';
 import 'package:nothing_music/screens/Playlists/playlist_screen.dart';
 import 'package:nothing_music/screens/Drawer/privacy_policy_screen.dart';
@@ -28,6 +31,8 @@ class _HomescreenState extends State<Homescreen> {
   void initState() {
     getAllFavSong();
     gettAllRecentSongs();
+    getAllMostPlayedSongs();
+    geAllPlaylist();
     super.initState();
   }
 

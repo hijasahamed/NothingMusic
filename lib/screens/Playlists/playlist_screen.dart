@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:nothing_music/screens/Playlists/most_played_screen.dart';
+import 'package:nothing_music/screens/most_played/most_played_screen.dart';
 import 'package:nothing_music/screens/Playlists/playlist_created_screen.dart';
-import 'package:nothing_music/screens/Playlists/recent_played_screen.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';
 import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 
-class Playlistscreen extends StatelessWidget {
+class Playlistscreen extends StatefulWidget {
   const Playlistscreen({super.key});
+
+  @override
+  State<Playlistscreen> createState() => _PlaylistscreenState();
+}
+
+class _PlaylistscreenState extends State<Playlistscreen> {
+
+    final playListNameController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +27,6 @@ class Playlistscreen extends StatelessWidget {
             padding: EdgeInsets.all(7),
             child: Column(
               children: [
-
                 Container(                   
                   child: Column(
                     children: [
@@ -88,13 +97,12 @@ class Playlistscreen extends StatelessWidget {
                       Divider(
                         color: Color.fromARGB(255, 110, 19, 19),
                         thickness: 2,
-                        height: 30,
+                        height: 25,
                       ),
                     ],
                   ),
                 ),
               
-
                 Container(
                   height: 460,
                   width: double.infinity,
@@ -116,7 +124,7 @@ class Playlistscreen extends StatelessWidget {
                       child: InkWell(
                         splashColor: Colors.white12,
                         onTap: () {
-                          _createPlaylist(context);
+                          createPlaylist(context,playListNameController);
                         },
                         child: Icon(
                           Icons.playlist_add,
@@ -136,35 +144,4 @@ class Playlistscreen extends StatelessWidget {
       ),
     );
   }
-
-  void _createPlaylist(context){
-    showDialog(
-      context: context, 
-      builder: (ctx){
-        return AlertDialog(
-          title: Text('New Playlist'),
-          content: TextFormField(
-            decoration: const InputDecoration(
-              suffixIcon: Icon(Icons.edit_outlined),
-              border: OutlineInputBorder(),
-            ),
-            textCapitalization: TextCapitalization.words,
-          ),
-          actions: [
-            TextButton(
-              onPressed: (){
-                Navigator.of(context).pop();
-              }, 
-              child: Text('Cancel')
-            ),
-            TextButton(
-              onPressed: (){}, 
-              child: Text('Create')
-            ),
-          ],
-        );
-      }
-    );
-  }
-
 }

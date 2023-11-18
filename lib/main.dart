@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Intros/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +14,8 @@ Future<void> main() async{
   
     Hive.registerAdapter(AudioModelAdapter());
     Hive.registerAdapter(FavAudioModelAdapter());
+    Hive.registerAdapter(PlayListModelAdapter());
+    
   
   await Hive.openBox<AudioModel>('songs_db');
   await Hive.openBox<FavAudioModel>('Fav_song_db');
