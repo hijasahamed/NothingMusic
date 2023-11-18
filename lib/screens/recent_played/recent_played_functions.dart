@@ -15,7 +15,6 @@ addToRecentPlayed(AudioModel value)async{
   recentsongbox.put(id1, value);
   gettAllRecentSongs();
 }
-
 gettAllRecentSongs()async{
   final recentsongbox= await Hive.openBox<AudioModel>('recent_song_db');
   recentSongNotifier.value.clear();
