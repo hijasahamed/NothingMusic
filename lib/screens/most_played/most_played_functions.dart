@@ -40,10 +40,10 @@ mostPlayedSelecting()async{
 
 
 addToMostPlayedSongs(AudioModel value)async{
-  final mostplayedsongbox= await Hive.openBox<AudioModel>('most_played_song_db');
-  final id1=await mostplayedsongbox.add(value);
+  final mostPlayedsongbox= await Hive.openBox<AudioModel>('most_played_song_db');
+  final id1=await mostPlayedsongbox.add(value);
   value.id=id1;
-  mostplayedsongbox.put(id1, value);
+  mostPlayedsongbox.put(id1, value);
   getAllMostPlayedSongs();
 }
 
@@ -51,7 +51,7 @@ getAllMostPlayedSongs()async{
   final mostPlayedSongBox=await Hive.openBox<AudioModel>('most_played_song_db');
   MostplayedSongNotifier.value.clear();
   MostplayedSongNotifier.value.addAll(mostPlayedSongBox.values);
-  MostplayedSongNotifier.notifyListeners(); 
+  MostplayedSongNotifier.notifyListeners();
 }
 
 removeMostPlayed(int id)async{

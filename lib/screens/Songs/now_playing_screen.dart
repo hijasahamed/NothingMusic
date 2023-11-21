@@ -4,6 +4,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
@@ -121,7 +122,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 image: widget.songsList[currentindex].image, 
                 title: widget.songsList[currentindex].title, 
                 artist: widget.songsList[currentindex].artist, 
-                uri: widget.songsList[currentindex].uri);
+                uri: widget.songsList[currentindex].uri); 
+
                 recentPlayedAdding(recentsong);
 
                 addToMostPlayedList(recentsong); 
@@ -208,7 +210,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               backgroundColor: Colors.white24,
                               child: IconButton(
                                 onPressed: (){
-                                  print(widget.songsList[currentindex].id);
+                                  showPlayListInBottomSheet(PlayListModel(
+                                    title: widget.songsList[currentindex].title,
+                                    artist: widget.songsList[currentindex].artist,
+                                    image: widget.songsList[currentindex].image,
+                                    uri: widget.songsList[currentindex].uri,                                    
+                                    ), context);
                                 }, 
                                 icon: Icon(Icons.playlist_add ,color: Colors.white,),                            
                               ),
@@ -293,31 +300,24 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   addToFavDbNowPlaying(song,context)async{
     final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');    
     if(!favsongbox.values.any((element) => element.uri == song.uri)){
-      final _favSong=FavAudioModel(image: song.image!, title: song.title, artist: song.artist, uri: song.uri); 
+      final _favSong=FavAudioModel(image: song.image!, title: song.title, artist: song.artist, uri: song.uri,); 
       addToFav(_favSong);
       setState(() {
         _isFavourite=true;
       });
       favAddedSnackbar(context);
-      print('id is ${song.id}');
     }
+    // else if(favsongbox.values.any((element) => element.uri == song.uri)){
+    //   removeFavSong(song.id);
+    //   setState(() {
+    //     _isFavourite=false;
+    //   });
+    //   favRemovedsnackbar(context);
+    // }
     else{
       favAlreadyAddedSnackbar(context);
     }     
   }
-
-  // void shuffleSongs() {
-  //   if (allSonglist.isNotEmpty) {
-  //     setState(() {
-  //       _isshuffle=true;
-  //     });
-  //     allSonglist.shuffle();
-  //     widget.audioplayer.setAudioSource(ConcatenatingAudioSource(children: allSonglist), initialIndex: 0);
-  //     widget.audioplayer.play();
-  //   }
-  // }
-
-
 }
 
 

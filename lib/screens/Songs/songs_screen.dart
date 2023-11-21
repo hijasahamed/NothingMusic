@@ -9,6 +9,8 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
+final AudioPlayer audioPlayer = AudioPlayer();
+
 
 class Songsscreen extends StatefulWidget {
   const Songsscreen({super.key});
@@ -21,13 +23,13 @@ List allSongs=[];
 
 class _SongsscreenState extends State<Songsscreen> {
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  
 
 
   playSong(String? uri) {
     try {
-      _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
-      _audioPlayer.play();
+      audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
+      audioPlayer.play();
     } on Exception {
       print('error');
     }
@@ -82,7 +84,7 @@ class _SongsscreenState extends State<Songsscreen> {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
-                              audioplayer: _audioPlayer,
+                              audioplayer: audioPlayer,
                               songsList: allSongs,
                               songindex: index,                              
                             );
@@ -125,15 +127,13 @@ class _SongsscreenState extends State<Songsscreen> {
                         ),
                         trailing: IconButton(
                             onPressed: () {
-                              _showBottomSheet(context,songs,index);
+                              songsBottomSheet(context, songs, index, audioPlayer);                        
                             },
                             icon: Icon(Icons.more_vert)
                         ),
                       );
                     },
-                    separatorBuilder: ((context, index) => const SizedBox(
-                          height: 20,
-                        )),
+                    separatorBuilder: ((context, index) => const Divider()),
                     itemCount: songbox.length,
                   );
                 }
@@ -142,105 +142,6 @@ class _SongsscreenState extends State<Songsscreen> {
                 }
               }),
         ));
-  }
-
-
-
-  void _showBottomSheet(context,songs,index) {
-    showModalBottomSheet(
-        backgroundColor: Color.fromARGB(255, 35, 35, 35),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        )),
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 325,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 35, left: 35),
-                  child: Column(
-                    children: [
-                      Text(
-                        songs.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      Text(
-                        "${songs.artist}",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 40,
-                  thickness: 1,
-                  indent: 30,
-                  endIndent: 30,
-                  color: Colors.white,
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return NowPlayingScreen(
-                        audioplayer: _audioPlayer,
-                        songsList: allSongs,
-                        songindex: index,                        
-                      );
-                    }));
-                  },
-                  leading: Icon(
-                    Icons.play_circle,
-                    color: Colors.white,
-                  ),
-                  title: Text('Play',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-                ListTile(
-                  onTap: () {
-                    addToFavDBBottomSheet(songs, context);
-                  },
-                  leading: Icon(
-                    Icons.favorite_rounded,
-                    color: Colors.white,
-                  ),
-                  title: Text('Add to Favourite',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(
-                    Icons.playlist_add,
-                    color: Colors.white,
-                  ),
-                  title: Text('Add to Playlist',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-                ListTile(
-                  onTap: () {},
-                  leading: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                  title: Text('Delete',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-              ],
-            ),
-          );
-        });
   }
 
 }

@@ -1,42 +1,11 @@
-
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
-import 'package:nothing_music/screens/favourite/favourite_functions.dart';
+import 'package:nothing_music/screens/Songs/songs_functions.dart';
 
-
-addToFavDBBottomSheet(songs,context)async{
-    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');
-    if(!favsongbox.values.any((element) => element.uri == songs.uri)){
-      final _favSong=FavAudioModel(image: songs.image!, title: songs.title, artist: songs.artist, uri: songs.uri);
-      addToFav(_favSong);
-      favAddedSnackbar(context);
-      Navigator.pop(context);
-    }
-    else{
-      favAlreadyAddedSnackbar(context);
-      Navigator.pop(context);
-    }  
-}
-
-formatTime(Duration duration){
-  String twoDigits(int n) => n.toString().padLeft(2,'0');
-  final hours = twoDigits(duration.inHours);
-  final minutes = twoDigits(duration.inMinutes.remainder(60));
-  final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-  return[
-    if(duration.inHours > 0) hours,
-    minutes,
-    seconds,
-  ].join(':');
-}
-
-songsBottomSheet(context,songs,index,audioPlayer) {
+playlistSongsOptions(context,songs,index,audioPlayer,list,name,int id) {
     showModalBottomSheet(
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
         shape: const RoundedRectangleBorder(
@@ -86,7 +55,7 @@ songsBottomSheet(context,songs,index,audioPlayer) {
                         .push(MaterialPageRoute(builder: (context) {
                       return NowPlayingScreen(
                         audioplayer: audioPlayer,
-                        songsList: allSongs,
+                        songsList: list,
                         songindex: index,                        
                       );
                     }));
@@ -112,14 +81,13 @@ songsBottomSheet(context,songs,index,audioPlayer) {
                 ListTile(
                   onTap: () {
                     Navigator.pop(context);
-                    final value=PlayListModel(title: songs.title,artist: songs.artist,image: songs.image,uri: songs.uri);
-                    showPlayListInBottomSheet(value,context);  
+                    // deleteplaylistsongs(list, index, name, id); 
                   },
                   leading: Icon(
-                    Icons.playlist_add,
+                    Icons.delete,
                     color: Colors.white,
                   ),
-                  title: Text('Add to Playlist',
+                  title: Text('Remove from Playlist',
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
               ],
@@ -127,4 +95,11 @@ songsBottomSheet(context,songs,index,audioPlayer) {
           );
         });
   }
-  
+
+  deleteplaylistsongs(list, int index, name, int id) async {
+  final db = await Hive.openBox<PlayListModel >('playlist');
+  list.removeAt(index);
+  final a = PlayListModel (id: id, name: name, songsList: list);
+  await db.put(id, a);
+  getAllPlaylist(); 
+  }

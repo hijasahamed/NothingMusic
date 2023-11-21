@@ -3,7 +3,6 @@ import 'package:nothing_music/screens/most_played/most_played_screen.dart';
 import 'package:nothing_music/screens/Playlists/playlist_created_screen.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';
-import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 
 class Playlistscreen extends StatefulWidget {
   const Playlistscreen({super.key});
@@ -14,9 +13,7 @@ class Playlistscreen extends StatefulWidget {
 
 class _PlaylistscreenState extends State<Playlistscreen> {
 
-    final playListNameController = TextEditingController();
-
-
+    
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,10 +21,10 @@ class _PlaylistscreenState extends State<Playlistscreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.all(7),
+            padding:const EdgeInsets.all(7),
             child: Column(
               children: [
-                Container(                   
+                SizedBox(                   
                   child: Column(
                     children: [
                       Row(
@@ -35,7 +32,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                         children: [
                           Ink(
                             height: 160,
-                            width: 190,
+                            width: 180,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               image: DecorationImage(
@@ -45,7 +42,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                             child: InkWell(
                               splashColor: Colors.white12,
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Recentplayed();}));
+                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Recentplayed();}));
                               },
                               child: Container(
                                 height: 160,
@@ -65,7 +62,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                           ),
                           Ink(
                             height: 160,
-                            width: 190,
+                            width: 180,
                             decoration: const BoxDecoration(
                               borderRadius: BorderRadius.all(Radius.circular(10)),
                               image: DecorationImage(
@@ -75,13 +72,13 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                             child: InkWell(
                               splashColor: Colors.white12,
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Mostplayed();})); 
+                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Mostplayed();})); 
                               },
                               child: Container(
                                 height: double.infinity,
                                 width: double.infinity,
-                                color: Colors.black12 ,
-                                child: Center(
+                                color: Colors.black12,
+                                child:const Center(
                                     child: Text(
                                   'Most Played',
                                   style: TextStyle(
@@ -94,8 +91,8 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                           ),
                         ],
                       ),
-                      Divider(
-                        color: Color.fromARGB(255, 110, 19, 19),
+                      const Divider(
+                        color: Color.fromARGB(255, 110, 19, 19), 
                         thickness: 2,
                         height: 25,
                       ),
@@ -103,13 +100,13 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                   ),
                 ),
               
-                Container(
-                  height: 460,
+                const SizedBox(
+                  height: 390,
                   width: double.infinity,
                   child: PlaylistCreatedScreen(), 
                 ),
   
-                Container(
+                SizedBox(
                   width: double.infinity,
                   height: 72,                
                   child: Align(
@@ -126,7 +123,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                         onTap: () {
                           createPlaylist(context,playListNameController);
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.playlist_add,
                           color: Colors.white,
                           size: 30,

@@ -17,12 +17,12 @@ class PlayListModelAdapter extends TypeAdapter<PlayListModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PlayListModel(
-      name: fields[0] as String,
-      playlistList: (fields[1] as List).cast<dynamic>(),
+      name: fields[0] as String?,
+      songsList: (fields[1] as List?)?.cast<dynamic>(),
       id: fields[2] as int?,
-      image: fields[3] as int?,
-      title: fields[4] as String,
-      artist: fields[5] as String,
+      artist: fields[4] as String?,
+      image: fields[5] as int?,
+      title: fields[3] as String?,
       uri: fields[6] as String?,
     );
   }
@@ -34,15 +34,15 @@ class PlayListModelAdapter extends TypeAdapter<PlayListModel> {
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
-      ..write(obj.playlistList)
+      ..write(obj.songsList)
       ..writeByte(2)
       ..write(obj.id)
       ..writeByte(3)
-      ..write(obj.image)
-      ..writeByte(4)
       ..write(obj.title)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.artist)
+      ..writeByte(5)
+      ..write(obj.image)
       ..writeByte(6)
       ..write(obj.uri);
   }

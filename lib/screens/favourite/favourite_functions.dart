@@ -15,7 +15,6 @@ addToFav(FavAudioModel value)async{
   value.id=id1;
   favsongbox.put(id1,value);
   getAllFavSong();
-  print(favsongbox);
 }
 
 getAllFavSong()async{
@@ -28,12 +27,17 @@ getAllFavSong()async{
 removeFavSong(int id)async{
     final favsongbox= await Hive.openBox<FavAudioModel>('Fav_song_db');
     await favsongbox.delete(id);
-    print(favsongbox);
     getAllFavSong();
 }
 
+// removeWithUri(String uri)async{ 
+//   final favsongbox= await Hive.openBox<FavAudioModel>('Fav_song_db');
+//   await favsongbox.delete(uri);
+//   getAllFavSong();
+// }
 
-favBottomSheeet(context,data,index,_audioPlayer){
+
+favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
     showModalBottomSheet(
       backgroundColor: Color.fromARGB(255, 35, 35, 35),
       shape: const RoundedRectangleBorder(
@@ -82,7 +86,7 @@ favBottomSheeet(context,data,index,_audioPlayer){
                   Navigator.of(context).pop();
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return  NowPlayingScreen(audioplayer: _audioPlayer, songsList: allSongs, songindex: index);
+                    return  NowPlayingScreen(audioplayer: audioPlayer, songsList: allSongsvv, songindex: index);
                   }));
                 },
                 leading: const Icon(
@@ -141,15 +145,15 @@ favBottomSheeet(context,data,index,_audioPlayer){
         width: 300,
       )
     );
-}
+  }
 
-favAlreadyAddedSnackbar(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Song Already In Favourites',style: TextStyle(fontSize: 15),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
-      )
-    );
-}
+  favAlreadyAddedSnackbar(ctx){
+      return ScaffoldMessenger.of(ctx).showSnackBar(
+        const SnackBar(
+          content: Center(child: Text('Song Already In Favourites',style: TextStyle(fontSize: 15),)),
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+          width: 300,
+        )
+      );
+  }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -113,7 +111,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                   trailing: IconButton(
                       splashRadius: 25,
                       onPressed: () {
-                        favBottomSheeet(context,data,index,_audioPlayer);                    
+                        favBottomSheeet(context,data,index,_audioPlayer,allSongs);                    
                       },
                       icon: const Icon(
                         Icons.more_vert,
@@ -121,9 +119,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                       )),
                 );
               },
-              separatorBuilder: ((context, index) =>const SizedBox(
-                    height: 20,
-                  )),
+              separatorBuilder: ((context, index) =>const Divider()), 
               itemCount: favouriteSongs.length,
             );
           }

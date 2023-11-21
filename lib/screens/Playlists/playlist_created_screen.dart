@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
@@ -24,12 +22,15 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
       body: ValueListenableBuilder(
         valueListenable: playlistNameNotifier, 
         builder: (BuildContext ctx,List<PlayListModel>playlistNameList,Widget? child){
+          final temp=playlistNameList.reversed.toList();
+          playlistNameList=temp.toList();
           if(playlistNameList.isEmpty){
               return const Center(
                 child: Text(
                     'No PlayList',
                     style: TextStyle(
                       color: Colors.white,
+                      fontWeight: FontWeight.w500
                     ),
                   ),
               );
@@ -47,26 +48,35 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
           final data=playlistNameList[index];                                            
           return Ink(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color.fromARGB(255, 68, 21, 21),
+              borderRadius: BorderRadius.circular(10),              
+              color: Color.fromARGB(255, 36, 3, 3),
             ),
-            child: InkWell(                            
+            child: InkWell(                             
               splashColor: Colors.white12,
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return Selectedplaylist();})); 
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (contex){ 
+                    return Selectedplaylist(
+                      allPlaylistSong: data.songsList!,
+                      name: data.name!??'hel',
+                    );
+                  })
+                ); 
               },
               child: Column(
                 children: [                             
                   Align(
                     alignment: Alignment.topRight,
                     child: PopupMenuButton(
-                      color: Color.fromARGB(255, 60, 58, 58), 
+                      color: Color.fromARGB(255, 60, 58, 58),
                       elevation: 20, 
-                      onSelected: (value) {
+                      onSelected: (value) { 
                         if (value == 'edit') {
-                        
-                        } else if (value == 'delete') {
-                        
+                          playlistNameEdit(context,data.id,data.name,data.songsList);
+                        } 
+                        else if (value == 'delete') {
+                          removePlaylist(data.id!);
+                          playListRemoved(ctx);
                         }
                       },
                       icon: const Icon(
@@ -80,7 +90,8 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start ,
                               children: [
-                                Icon(Icons.edit,color: Colors.green,), 
+                                Icon(Icons.edit,color: Colors.green,),
+                                SizedBox(width: 10,),
                                 Text('Edit',style: TextStyle(color: Colors.white)),
                               ],
                             ),
@@ -91,6 +102,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                               mainAxisAlignment: MainAxisAlignment.start ,
                               children: [
                                 Icon(Icons.delete,color: Colors.red,),
+                                SizedBox(width: 10,),
                                 Text('Delete',style: TextStyle(color: Colors.white),),
                               ],
                             ),
@@ -99,7 +111,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                       },
                     ),
                   ),
-                  Text(data.name,style: TextStyle(fontSize: 20, color: Colors.white),),
+                  Text(data.name!,style: TextStyle(fontSize: 20, color: Color.fromARGB(255, 210, 206, 206),fontWeight: FontWeight.w500),),
                 ],
               ),
             ),
@@ -110,7 +122,5 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
         }
       )
     );
-  }
-
-  
+  } 
 }

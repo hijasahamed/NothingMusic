@@ -60,7 +60,6 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - Assets/images/earphone.webp
-    - Assets/images/heeriye.jpg
     - Assets/images/music logo.png
     - Assets/images/uyiril.jpg
     - Assets/Animations/mini player wave animation.json
@@ -68,7 +67,7 @@ flutter:
     - Assets/Animations/no result animation.json
     - Assets/Animations/playallfavsong animation.json
     - Assets/Animations/searching song animation.json
-    - Assets/Animations/no searched song animation.json  
+    - Assets/Animations/no searched song animation.json 
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

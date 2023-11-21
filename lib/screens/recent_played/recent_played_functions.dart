@@ -33,12 +33,15 @@ recentPlayedAdding(song)async{
     final recentsongbox= await Hive.openBox<AudioModel>('recent_song_db');
     final existingSong = recentsongbox.values.firstWhere(
     (element) => element.uri == song.uri,orElse: () {
-     return addToRecentPlayed(song);
+     return AudioModel(artist: '',image: 0,title: '',uri: '',id: 0);
     },
   );
   if (existingSong.uri ==song.uri ) {
     await removeRecentplayed(existingSong.id!);
      addToRecentPlayed(song);
+  }
+  else{
+    addToRecentPlayed(song);  
   }
 }
 
@@ -53,7 +56,7 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
     context: context,
     builder: (BuildContext context) {
       return Container(
-        height: 330,
+        height: 270 ,
         child: Column(
           children: [
             SizedBox(
@@ -121,19 +124,19 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
               title: const Text('Add to Favorites',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-            ListTile(
-              onTap: () {
-                Navigator.of(context).pop();                
-                removeRecentplayed(data.id);
-                recentPlayedRemovedSnackbar(context);                    
-              },
-              leading:const Icon(
-                Icons.delete,
-                color: Colors.white,
-              ),
-              title: const Text('Remove From Recents',
-                  style: TextStyle(color: Colors.white, fontSize: 20)),
-            ),
+            // ListTile(
+            //   onTap: () {
+            //     Navigator.of(context).pop();                
+            //     removeRecentplayed(data.id);
+            //     recentPlayedRemovedSnackbar(context);                    
+            //   },
+            //   leading:const Icon(
+            //     Icons.delete,
+            //     color: Colors.white,
+            //   ),
+            //   title: const Text('Remove From Recents',
+            //       style: TextStyle(color: Colors.white, fontSize: 20)),
+            // ),
           ],
         ),
       );

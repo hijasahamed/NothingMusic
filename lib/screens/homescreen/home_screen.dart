@@ -32,7 +32,7 @@ class _HomescreenState extends State<Homescreen> {
     getAllFavSong();
     gettAllRecentSongs();
     getAllMostPlayedSongs();
-    geAllPlaylist();
+    getAllPlaylist();
     super.initState();
   }
 
