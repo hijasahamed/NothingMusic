@@ -28,15 +28,16 @@ class _MostplayedState extends State<Mostplayed> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Most Played'),
+        centerTitle: true,
+        title:const Text('Most Played'),
         backgroundColor: const Color.fromARGB(255, 35, 35, 35),
       ),
       body: SafeArea(
         child: Scrollbar( 
           thickness: 2,
-          radius: Radius.circular(20),
+          radius:const Radius.circular(20),
           child: ValueListenableBuilder(
-            valueListenable: MostplayedSongNotifier, 
+            valueListenable: mostplayedSongNotifier, 
             builder: (BuildContext ctx,List<AudioModel>mostPlayedsongslist,Widget? child){
               final temp=mostPlayedsongslist.reversed.toList();
               mostPlayedsongslist=temp.toList();
@@ -47,13 +48,15 @@ class _MostplayedState extends State<Mostplayed> {
                     children: [
                       LottieBuilder.asset(
                         'Assets/Animations/no result animation.json',
-                        height: 150,
+                        height: 120,
+                        width: 120,
                       ),
                       const Text(
-                        'No Mostplayed Songs', 
+                        ' No Songs In Most Played',  
                         style: TextStyle(
                           color: Colors.white,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15
                         ),
                       )
                     ],
@@ -71,7 +74,7 @@ class _MostplayedState extends State<Mostplayed> {
                       context.read<ArtWorkProvider>().setId(data.image!);
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
-                          return NowPlayingScreen(audioplayer: _audioPlayer, songsList: allsongs, songindex: index);
+                          return NowPlayingScreen(songsList: allsongs, songindex: index);
                         }));
                     },                 
                     leading: QueryArtworkWidget(
@@ -99,18 +102,18 @@ class _MostplayedState extends State<Mostplayed> {
                       data.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white,),
+                      style:const TextStyle(color: Colors.white,),
                     ),
                     subtitle: Text(
                       data.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.white),
                     ),
                     trailing: IconButton(
                         splashRadius: 25,
                         onPressed: () {
-                          mostPlayedBottomSheeet(context, data, index,_audioPlayer,allsongs);                 
+                          mostPlayedBottomSheeet(context, data, index,allsongs);                 
                         },
                         icon: const Icon(
                           Icons.more_vert,
@@ -119,7 +122,7 @@ class _MostplayedState extends State<Mostplayed> {
                   );                
                 }), 
                 separatorBuilder: (ctx,index){
-                  return Divider();
+                  return const Divider();
                 }, 
                 itemCount: mostPlayedsongslist.length
               ); 

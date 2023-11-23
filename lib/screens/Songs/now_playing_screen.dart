@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
@@ -17,10 +17,9 @@ import 'package:provider/provider.dart';
 
 
 class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen({super.key,required this.audioplayer,required this.songsList,required this.songindex});
+  const NowPlayingScreen({super.key,required this.songsList,required this.songindex});
  
 
- final AudioPlayer audioplayer;
  final List songsList;
  final int songindex;
 
@@ -35,13 +34,15 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   Duration duration=Duration.zero;
   Duration position=Duration.zero;
   bool _isFavourite=false;
-  bool _isshuffle=false;
+  bool isshuffle=false;
+  bool loopMode=false;
 
   List<AudioSource> allSonglist=[];
   int currentindex=0;
 
   @override
   void initState() {
+    // context.read<ArtWorkProvider>().setId(widget.songsList[widget.songindex].image!);
     super.initState();
     playSong(); 
   }
@@ -56,8 +57,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           Uri.parse(elements.uri)
         ));
       }
-      widget.audioplayer.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex);
-      widget.audioplayer.play();
+      audioPlayerAudio.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex);
+      audioPlayerAudio.play();
       listenToSongIndex();
       listenToEvent();
       
@@ -68,7 +69,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       }
     }
 
-    widget.audioplayer.durationStream.listen((d) {
+    audioPlayerAudio.durationStream.listen((d) {
       if(mounted){
         if (d != null) {
       setState(() {
@@ -77,7 +78,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     }
       }
     });
-    widget.audioplayer.positionStream.listen((p) {
+    audioPlayerAudio.positionStream.listen((p) {
       if(mounted){
         setState(() {
         position=p; 
@@ -88,7 +89,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   }
 
   void listenToEvent() {
-    widget.audioplayer.playerStateStream.listen((state) {
+    audioPlayerAudio.playerStateStream.listen((state) {
       if(mounted){
         if (state.playing) {
         setState(() {
@@ -110,7 +111,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   } 
 
   void listenToSongIndex() {
-    widget.audioplayer.currentIndexStream.listen(
+    audioPlayerAudio.currentIndexStream.listen(
       (event) {
         if(mounted){
           if(event != null && event >=0 && event <widget.songsList.length){
@@ -125,10 +126,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 uri: widget.songsList[currentindex].uri); 
 
                 recentPlayedAdding(recentsong);
-
-                addToMostPlayedList(recentsong); 
-
-
+              
+                checkAndAddToMostplayed(recentsong,widget.songsList[currentindex].uri,widget.songsList[currentindex]);
                                    
               _isFavourite = isSongInDatabase(widget.songsList[currentindex].uri);
             });
@@ -145,7 +144,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   void dispose() {
-    widget.audioplayer.stop();
+    // widget.audioplayer.stop();
+    audioPlayerAudio.setShuffleModeEnabled(false);
+    audioPlayerAudio.setLoopMode(LoopMode.off); 
     super.dispose();
   }
 
@@ -187,7 +188,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               value: position.inSeconds.toDouble(), 
                               onChanged: (value)async{
                                 final position = Duration(seconds: value.toInt());
-                                await widget.audioplayer.seek(position);
+                                await audioPlayerAudio.seek(position);
                               }
                             )
                           ),
@@ -239,29 +240,37 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                         children: [
                           IconButton(
                             onPressed: (){
-                              // shuffleSongs();                               
+                              isshuffle=!isshuffle;
+                              if(isshuffle){
+                                audioPlayerAudio.setShuffleModeEnabled(true);
+                                shuffleOnSnackbar(context);
+                              }
+                              else{
+                                audioPlayerAudio.setShuffleModeEnabled(false);
+                                shuffleOffSnackbar(context);
+                              }                           
                             }, 
-                            icon: Icon(Icons.shuffle,color: _isshuffle ? Colors.blue : Colors.white)
+                            icon: isshuffle==true? Icon(Icons.shuffle,color: Colors.blue,) :Icon(Icons.shuffle),
                           ),
                           IconButton(
                             onPressed: (){
-                              if(widget.audioplayer.hasPrevious){
-                                widget.audioplayer.seekToPrevious();
+                              if(audioPlayerAudio.hasPrevious){
+                                audioPlayerAudio.seekToPrevious();
                               }
                             }, 
                             icon: Icon(Icons.arrow_back_ios_outlined,color: Colors.white,)
                           ),
-                          CircleAvatar(
+                          CircleAvatar(                            
                             radius: 25,
                             backgroundColor: Colors.white,
                             child: IconButton(
                               onPressed: (){
                                 setState(() {
                                   if(_isPlaying){
-                                    widget.audioplayer.pause();
+                                    audioPlayerAudio.pause();
                                   }
                                   else{
-                                    widget.audioplayer.play();
+                                    audioPlayerAudio.play();
                                   }
                                   _isPlaying = !_isPlaying; 
                                 });
@@ -271,16 +280,23 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           ),
                           IconButton(
                             onPressed: (){
-                              if(widget.audioplayer.hasNext){
-                                widget.audioplayer.seekToNext();
+                              if(audioPlayerAudio.hasNext){
+                                audioPlayerAudio.seekToNext();
                               }
                             }, 
                             icon: Icon(Icons.arrow_forward_ios_outlined,color: Colors.white,) 
                           ),
                           IconButton(
-                            onPressed: (){                              
+                            onPressed: (){
+                              loopMode=!loopMode;
+                              if(loopMode){
+                                audioPlayerAudio.setLoopMode(LoopMode.all);
+                              }
+                              else{
+                                audioPlayerAudio.setLoopMode(LoopMode.off);
+                              }           
                             }, 
-                            icon: Icon(Icons.repeat,color: Colors.white,)
+                            icon: loopMode? Icon(Icons.repeat_one,color: Colors.blue,) :Icon(Icons.repeat)
                           ),
                         ],
                       ),

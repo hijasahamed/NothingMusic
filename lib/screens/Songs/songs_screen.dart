@@ -9,7 +9,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-final AudioPlayer audioPlayer = AudioPlayer();
+final AudioPlayer audioPlayerAudio= AudioPlayer();
 
 
 class Songsscreen extends StatefulWidget {
@@ -23,33 +23,53 @@ List allSongs=[];
 
 class _SongsscreenState extends State<Songsscreen> {
 
-  
+  bool isPlaying=true;
 
 
-  playSong(String? uri) {
-    try {
-      audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
-      audioPlayer.play();
-    } on Exception {
-      print('error');
-    }
+  @override
+  void initState() {
+    super.initState();
+    listenToEvent();
   }
 
-  
-  
+  void listenToEvent() {
+    audioPlayerAudio.playerStateStream.listen((state) {
+      if (mounted) {
+        if (state.playing) {
+          setState(() {
+            isPlaying = true;
+          });
+        } else {
+          setState(() {
+            isPlaying = false;
+          });
+        }
 
+        if (state.processingState == ProcessingState.completed) {
+          setState(() {
+            isPlaying = false;
+          });
+        }
+      }
+    });
+  }
+
+  bool isIndexPlaying(int index) {
+    return audioPlayerAudio.currentIndex == index && audioPlayerAudio.playing;
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
         body: Scrollbar(
-          radius: Radius.circular(20),
+          radius:const Radius.circular(20),
           thickness: 2,
           child: FutureBuilder<Box<AudioModel>>(
               future: Hive.openBox<AudioModel>('songs_db'),
               builder: (context, snapshot) {
                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
                 if (snapshot.hasData) {
                   final songbox = snapshot.data!.values.toList();         
@@ -78,13 +98,13 @@ class _SongsscreenState extends State<Songsscreen> {
                   return ListView.separated(
                     itemBuilder: (ctx, index) {
                       final songs = songbox[index];
+                      final playingIndex=isIndexPlaying(index); 
                       return ListTile(
                         onTap: () {
-                          context.read<ArtWorkProvider>().setId(songs.image!);                         
+                          // context.read<ArtWorkProvider>().setId(songs.image!);                         
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
-                              audioplayer: audioPlayer,
                               songsList: allSongs,
                               songindex: index,                              
                             );
@@ -115,21 +135,26 @@ class _SongsscreenState extends State<Songsscreen> {
                           songs.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style:const TextStyle(
                             color: Colors.white,
                           ),
                         ),
                         subtitle: Text(
-                          "${songs.artist}",
+                          songs.artist,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        trailing: IconButton(
-                            onPressed: () {
-                              songsBottomSheet(context, songs, index, audioPlayer);                        
-                            },
-                            icon: Icon(Icons.more_vert)
+                          style:const TextStyle(color: Colors.white),
+                        ), 
+                        trailing: isPlaying ==true && playingIndex?  
+                        Visibility(
+                          visible: isPlaying, 
+                          child: LottieBuilder.asset('Assets/Animations/mini player wave animation.json',height: 35,width: 35,)
+                        )
+                        :IconButton(
+                          onPressed: () {
+                            songsBottomSheet(context, songs, index, audioPlayerAudio);
+                          }, 
+                          icon:const  Icon(Icons.more_vert)
                         ),
                       );
                     },
@@ -138,7 +163,7 @@ class _SongsscreenState extends State<Songsscreen> {
                   );
                 }
                 else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               }),
         ));

@@ -2,40 +2,33 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:provider/provider.dart';
 
 List mostPlayedList=[];
 
-ValueNotifier<List<AudioModel>> MostplayedSongNotifier=ValueNotifier([]);
+ValueNotifier<List<AudioModel>> mostplayedSongNotifier=ValueNotifier([]);
 
-addToMostPlayedList(value)async{
+
+checkAndAddToMostplayed(value,String uri,songListSong)async{
   mostPlayedList.add(value);
-  mostPlayedSelecting();
-}
-
-mostPlayedSelecting()async{
-  final songs=mostPlayedList.toSet().toList();
-   int count=0;
-
-   for(int i=0;i<songs.length;i++){
-    for(int j=0;j<mostPlayedList.length;j++){
-      if(songs[i]==mostPlayedList[j]){
-        count++;
-      }
+  int playCount=0;
+  for(var song in mostPlayedList){
+    if(song.uri==uri){
+      playCount++;
     }
-    if(count==3){
-      final mostplayedsongbox= await Hive.openBox<AudioModel>('most_played_song_db');
-      if(!mostplayedsongbox.values.any((element) => element.uri == songs[i].uri)){
-        addToMostPlayedSongs(songs[i]);
-        mostPlayedList.clear();
-        getAllMostPlayedSongs();
-      }
-      
-    }
-   }
+  }
+  if(playCount==3){
+    final mostPlayedsongbox= await Hive.openBox<AudioModel>('most_played_song_db');
+    if(!mostPlayedsongbox.values.any((element) => element.uri == uri)){
+    final mS=AudioModel(image: songListSong.image, title: songListSong.title, artist: songListSong.artist, uri: songListSong.uri);    
+    addToMostPlayedSongs(mS);
+  }
+  }
 }
 
 
@@ -49,9 +42,9 @@ addToMostPlayedSongs(AudioModel value)async{
 
 getAllMostPlayedSongs()async{
   final mostPlayedSongBox=await Hive.openBox<AudioModel>('most_played_song_db');
-  MostplayedSongNotifier.value.clear();
-  MostplayedSongNotifier.value.addAll(mostPlayedSongBox.values);
-  MostplayedSongNotifier.notifyListeners();
+  mostplayedSongNotifier.value.clear();
+  mostplayedSongNotifier.value.addAll(mostPlayedSongBox.values);
+  mostplayedSongNotifier.notifyListeners();
 }
 
 removeMostPlayed(int id)async{
@@ -61,9 +54,9 @@ removeMostPlayed(int id)async{
 }
 
 
-mostPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
+mostPlayedBottomSheeet(context,data,index,allsongs){
     showModalBottomSheet(
-      backgroundColor: Color.fromARGB(255, 35, 35, 35),
+      backgroundColor:const Color.fromARGB(255, 35, 35, 35),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(30),
@@ -71,28 +64,28 @@ mostPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
       )),
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 330,
           child: Column(
             children: [
-              SizedBox(
+             const SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: EdgeInsets.only(right: 35, left: 35),
+                padding:const EdgeInsets.only(right: 35, left: 35),
                 child: Column(
                   children: [
                     Text(
                       data.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style:const TextStyle(color: Colors.white, fontSize: 20),
                     ),
                     Text(
                       data.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -110,7 +103,7 @@ mostPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
                   Navigator.of(context).pop();
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return  NowPlayingScreen(audioplayer: _audioPlayer, songsList: allsongs, songindex: index);
+                    return  NowPlayingScreen(songsList: allsongs, songindex: index);
                   }));
                 },
                 leading: const Icon(
@@ -121,7 +114,11 @@ mostPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
                     style: TextStyle(color: Colors.white, fontSize: 20)),
               ),              
               ListTile(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                    final value=PlayListModel(title: data.title,artist: data.artist,image: data.image,uri: data.uri); 
+                    showPlayListInBottomSheet(value,context); 
+                },
                 leading: const Icon(
                   Icons.playlist_add,
                   color: Colors.white,
@@ -164,8 +161,8 @@ mostPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
       const SnackBar(
         content: Center(child: Text('Song Removed From Mostplayed',style: TextStyle(fontSize: 15),)),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
         duration: Duration(seconds: 2),
-        width: 300,
       )
     );
 }

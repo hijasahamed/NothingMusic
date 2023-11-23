@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:provider/provider.dart';
@@ -94,7 +96,7 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
                 Navigator.of(context).pop();
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) {
-                  return  NowPlayingScreen(audioplayer: _audioPlayer, songsList: allsongs, songindex: index);
+                  return  NowPlayingScreen(songsList: allsongs, songindex: index);
                 }));
               },
               leading: const Icon(
@@ -105,7 +107,11 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
                   style: TextStyle(color: Colors.white, fontSize: 20)),
             ),              
             ListTile(
-              onTap: () {},
+              onTap: () {
+                Navigator.pop(context);
+                final value=PlayListModel(title: data.title,artist: data.artist,image: data.image,uri: data.uri);
+                showPlayListInBottomSheet(value,context); 
+              },
               leading: const Icon(
                 Icons.playlist_add,
                 color: Colors.white,
@@ -124,32 +130,8 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
               title: const Text('Add to Favorites',
                   style: TextStyle(color: Colors.white, fontSize: 20)),
             ),
-            // ListTile(
-            //   onTap: () {
-            //     Navigator.of(context).pop();                
-            //     removeRecentplayed(data.id);
-            //     recentPlayedRemovedSnackbar(context);                    
-            //   },
-            //   leading:const Icon(
-            //     Icons.delete,
-            //     color: Colors.white,
-            //   ),
-            //   title: const Text('Remove From Recents',
-            //       style: TextStyle(color: Colors.white, fontSize: 20)),
-            // ),
           ],
         ),
       );
     });
-}
-
-  recentPlayedRemovedSnackbar(ctx){
-    return ScaffoldMessenger.of(ctx).showSnackBar(
-      const SnackBar(
-        content: Center(child: Text('Song Removed From Recent',style: TextStyle(fontSize: 15),)),
-        behavior: SnackBarBehavior.floating,
-        duration: Duration(seconds: 2),
-        width: 300,
-      )
-    );
 }

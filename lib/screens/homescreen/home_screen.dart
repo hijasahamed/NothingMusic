@@ -347,7 +347,7 @@ class search extends SearchDelegate {
                           context.read<ArtWorkProvider>().setId(data.image!);
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {                           
-                            return NowPlayingScreen(audioplayer: _audioPlayer, songsList: filteredSongs, songindex: index);
+                            return NowPlayingScreen(songsList: filteredSongs, songindex: index);
                           }));
                         },
                         title: Text(
@@ -428,7 +428,7 @@ class search extends SearchDelegate {
                           context.read<ArtWorkProvider>().setId(data.image!);
                             Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return NowPlayingScreen(audioplayer: _audioPlayer,songsList: filteredSongs, songindex: index);
+                            return NowPlayingScreen(songsList: filteredSongs, songindex: index);
                           }));
                         },
                         title: Text(data.title,maxLines: 1,overflow: TextOverflow.ellipsis,),

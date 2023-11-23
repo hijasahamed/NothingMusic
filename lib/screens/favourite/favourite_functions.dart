@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:provider/provider.dart';
@@ -86,7 +88,7 @@ favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
                   Navigator.of(context).pop();
                   Navigator.of(context)
                       .push(MaterialPageRoute(builder: (context) {
-                    return  NowPlayingScreen(audioplayer: audioPlayer, songsList: allSongsvv, songindex: index);
+                    return  NowPlayingScreen(songsList: allSongsvv, songindex: index);
                   }));
                 },
                 leading: const Icon(
@@ -97,7 +99,11 @@ favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
                     style: TextStyle(color: Colors.white, fontSize: 20)),
               ),              
               ListTile(
-                onTap: () {},
+                onTap: () {
+                  Navigator.pop(context);
+                    final value=PlayListModel(title: data.title,artist: data.artist,image: data.image,uri: data.uri);
+                    showPlayListInBottomSheet(value,context); 
+                },
                 leading: const Icon(
                   Icons.playlist_add,
                   color: Colors.white,
@@ -129,9 +135,8 @@ favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
       const SnackBar(
         content: Center(child: Text('Song Removed From Favourites',style: TextStyle(fontSize: 15),)),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
         duration: Duration(seconds: 2),
-        width: 300,
-
       )
     );
   }
@@ -141,8 +146,8 @@ favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
       const SnackBar(
         content: Center(child: Text('Added To Favourites',style: TextStyle(fontSize: 15),)),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
         duration: Duration(seconds: 2),
-        width: 300,
       )
     );
   }
@@ -152,8 +157,8 @@ favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
         const SnackBar(
           content: Center(child: Text('Song Already In Favourites',style: TextStyle(fontSize: 15),)),
           behavior: SnackBarBehavior.floating,
+          margin: EdgeInsets.all(50),
           duration: Duration(seconds: 2),
-          width: 300,
         )
       );
   }

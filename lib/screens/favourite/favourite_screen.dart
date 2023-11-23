@@ -49,13 +49,15 @@ class _FavouritescreenState extends State<Favouritescreen> {
                   children: [
                     LottieBuilder.asset(
                       'Assets/Animations/no result animation.json',
-                      height: 150,
+                      height: 120,
+                      width: 120,
                     ),
                     const Text(
-                      'No Songs In Favourites',
+                      ' No Songs In Favourites',
                       style: TextStyle(
                         color: Colors.white,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15
                       ),
                     )
                   ],
@@ -71,7 +73,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                     context.read<ArtWorkProvider>().setId(data.image!);
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context){
-                        return NowPlayingScreen(audioplayer: _audioPlayer, songsList: allSongs, songindex: index);
+                        return NowPlayingScreen(songsList: allSongs, songindex: index);
                       })
                     );                    
                   },

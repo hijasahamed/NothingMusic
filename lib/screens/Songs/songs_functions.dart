@@ -85,7 +85,6 @@ songsBottomSheet(context,songs,index,audioPlayer) {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return NowPlayingScreen(
-                        audioplayer: audioPlayer,
                         songsList: allSongs,
                         songindex: index,                        
                       );
@@ -128,3 +127,25 @@ songsBottomSheet(context,songs,index,audioPlayer) {
         });
   }
   
+
+  shuffleOnSnackbar(ctx){
+    return ScaffoldMessenger.of(ctx).showSnackBar(
+      const SnackBar(
+        content: Center(child: Text('Shuffle On',style: TextStyle(fontSize: 15,),)),
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        width: 150,
+      )
+    );
+  }
+
+  shuffleOffSnackbar(ctx){
+    return ScaffoldMessenger.of(ctx).showSnackBar(
+      const SnackBar(
+        content: Center(child: Text('Shuffle Off',style: TextStyle(fontSize: 15,),)), 
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        width: 150,
+      )
+    );
+  }

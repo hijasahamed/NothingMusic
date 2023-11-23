@@ -2,6 +2,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
+import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_functions.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 
@@ -91,7 +94,30 @@ import 'package:on_audio_query/on_audio_query.dart';
     );
   }
 
-
+  deleteThePlaylist(id,context,name)async{
+    return showDialog(
+      context: context, 
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Do You Want To Delete Playlist $name'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context), 
+              child: Text('No')
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                removePlaylist(id);
+                playListRemoved(context);
+              },
+              child: Text('Yes')
+            )
+          ],
+        );
+      },
+      );
+  }
 
 
   playlistNameEdit(context,id,name,list)async{
@@ -147,9 +173,6 @@ import 'package:on_audio_query/on_audio_query.dart';
   }
 
   
-
-  
-
   showPlayListInBottomSheet(PlayListModel values, context) {
     showModalBottomSheet(
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
@@ -177,11 +200,11 @@ import 'package:on_audio_query/on_audio_query.dart';
                           Text('CREATE NEW PLAYLIST',style: TextStyle(fontSize: 20,fontWeight: FontWeight.w500),),
                           SizedBox(height: 5,), 
                           Ink(
-                            height: 60,
-                            width: 60,
+                            height: 70,
+                            width: 70,
                             decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              color: Color.fromARGB(255, 59, 59, 58),
+                              borderRadius: BorderRadius.all(Radius.circular(5)),
+                              color: Color.fromARGB(255, 59, 59, 58), 
                             ),
                             child: InkWell(
                               splashColor: Colors.white12,
@@ -205,14 +228,14 @@ import 'package:on_audio_query/on_audio_query.dart';
                             return GestureDetector(
                               onTap: () async {
                                 Navigator.pop(context);
-                                addlist(playlist.id!, playlist.name!, playlist.songsList,values );
+                                addlist(playlist.id!, playlist.name!, playlist.songsList,values ,ctx);
                               },
                               child: Container(
                                 decoration: BoxDecoration(
                                     color: Color.fromARGB(255, 1, 1, 1),
                                     borderRadius: BorderRadius.circular(20)),
                                 width: double.infinity,
-                                height: 50,
+                                height: 70,
                                 child: Row(                                
                                   children: [
                                     SizedBox(width: 20,),
@@ -240,22 +263,124 @@ import 'package:on_audio_query/on_audio_query.dart';
         });
   }
 
-Future<void> addlist(
-    int id, String name, list, PlayListModel  value) async {
-  final db = await Hive.openBox<PlayListModel>('playlist_db');
-   print(list);
-  if (!list.any((item) => item.uri == value.uri)) {
-    list.add(value);
-   
-    final a =
-        PlayListModel (id: id, name: name, songsList: list);
-    await db.put(id, a);
-    print(list);
+  addlist(int id, String name, list, PlayListModel  value,context) async {
+    final db = await Hive.openBox<PlayListModel>('playlist_db');
+    if (!list.any((item) => item.uri == value.uri)) {
+      list.add(value);    
+      final a =PlayListModel (id: id, name: name, songsList: list);
+      await db.put(id, a);
+      addedToPlaylist(context);
+    }
+    else{
+      alreadyInPlaylist(context);
+    }
+    getAllPlaylist();
   }
-  getAllPlaylist();
-}
 
+  playlistSongsOptions(context,songs,index,list,id) {
+    showModalBottomSheet(
+        backgroundColor: Color.fromARGB(255, 35, 35, 35),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        )),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 270,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 35, left: 35),
+                  child: Column(
+                    children: [
+                      Text(
+                        songs.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      Text(
+                        "${songs.artist}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 40,
+                  thickness: 1,
+                  indent: 30,
+                  endIndent: 30,
+                  color: Colors.white,
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return NowPlayingScreen(
+                        songsList: list,
+                        songindex: index,                        
+                      );
+                    }));
+                  },
+                  leading: Icon(
+                    Icons.play_circle,
+                    color: Colors.white,
+                  ),
+                  title: Text('Play',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+                ListTile(
+                  onTap: () {
+                    addToFavDBBottomSheet(songs,context);
+                  },
+                  leading: Icon(
+                    Icons.favorite_rounded,
+                    color: Colors.white,
+                  ),
+                  title: Text('Add to Favourite',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);
+                    deleteplaylistsong(list,index);
+                    playlistSongdeleted(context);
+                  },
+                  leading: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                  title: Text('Remove from Playlist',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+              ],
+            ),
+          );
+        });
+  }
 
+  // deleteplaylistsongs(list,index, name,id) async {
+  // final db = await Hive.openBox<PlayListModel >('playlist');
+  // list.removeAt(index);
+  // final a = PlayListModel (id: id, name: name, songsList: list);
+  // await db.put(id, a);
+  // getAllPlaylist(); 
+  // }
+
+  deleteplaylistsong(list ,index,)async{
+    final refrehingDbList= await Hive.openBox<PlayListModel>('playlist_db');
+    list.removeAt(index);
+    getAllPlaylist();
+  }
 
 
 
@@ -264,44 +389,42 @@ Future<void> addlist(
   addedToPlaylist(context){
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(
-      duration:  Duration(seconds: 3),
+      duration:  Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.all(50),
       content: Text(
-        'Added to Playlist',
+        'Song Added to Playlist',
         textAlign: TextAlign.center,
         style: TextStyle(
             color: Colors.black, 
-            fontFamily: 'SLASHI'),
+        ),
       ),
     ));
-    Navigator.of(context).pop();
   }
 
   alreadyInPlaylist(context){
     ScaffoldMessenger.of(context)
         .showSnackBar(const SnackBar(
-      duration: Duration(seconds: 3),
+      duration: Duration(seconds: 2),
       behavior: SnackBarBehavior.floating,
       margin: EdgeInsets.all(50),
       content: Text(
-        'Already in Playlist',
+        'Song Already in Playlist',
         textAlign: TextAlign.center,
         style: TextStyle(
             color: Colors.black,
             ),
       ),
     ));
-    Navigator.of(context).pop();
   }
 
-    playListCreated(ctx){
+  playListCreated(ctx){
     ScaffoldMessenger.of(ctx).showSnackBar(
        const SnackBar(
         content: Center(child: Text('Playlist Created',style: TextStyle(fontSize: 15),)),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
         duration: Duration(seconds: 2),
-        width: 300,
       )
     );
   }
@@ -311,8 +434,24 @@ Future<void> addlist(
        const SnackBar(        
         content: Center(child: Text('Playlist Removed',style: TextStyle(fontSize: 15),)),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
         duration: Duration(seconds: 2),
-        width: 300,
       )
     );
+  }
+
+  playlistSongdeleted(context){
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(
+      duration:  Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+      margin: EdgeInsets.all(50),
+      content: Text(
+        'Song Deleted',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.black, 
+        ),
+      ),
+    ));
   }

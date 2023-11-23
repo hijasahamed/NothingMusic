@@ -27,10 +27,11 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
           if(playlistNameList.isEmpty){
               return const Center(
                 child: Text(
-                    'No PlayList',
+                    'No PlayList Available',
                     style: TextStyle(
                       color: Colors.white,
-                      fontWeight: FontWeight.w500
+                      fontWeight: FontWeight.w600,
+                      fontSize: 15
                     ),
                   ),
               );
@@ -45,7 +46,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
             childAspectRatio: 1.5
         ),
         itemBuilder: (ctx, index) { 
-          final data=playlistNameList[index];                                            
+          final data=playlistNameList[index];                                              
           return Ink(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),              
@@ -58,7 +59,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                   builder: (contex){ 
                     return Selectedplaylist(
                       allPlaylistSong: data.songsList!,
-                      name: data.name!??'hel',
+                      name: data.name,
                     );
                   })
                 ); 
@@ -75,8 +76,9 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                           playlistNameEdit(context,data.id,data.name,data.songsList);
                         } 
                         else if (value == 'delete') {
-                          removePlaylist(data.id!);
-                          playListRemoved(ctx);
+                          // removePlaylist(data.id!);
+                          deleteThePlaylist(data.id, context, data.name);
+                          
                         }
                       },
                       icon: const Icon(

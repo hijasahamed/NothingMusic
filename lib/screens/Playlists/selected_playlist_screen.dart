@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
-import 'package:nothing_music/screens/Playlists/playlistoptions.dart';
+import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class Selectedplaylist extends StatefulWidget {
   Selectedplaylist({super.key,required this.allPlaylistSong,required this.name});
   
-  final List allPlaylistSong;
+   List allPlaylistSong;
  final String? name;
 
   @override
@@ -18,27 +18,53 @@ class Selectedplaylist extends StatefulWidget {
 }
 
 class _SelectedplaylistState extends State<Selectedplaylist> {
+
+
+
   @override
   Widget build(BuildContext context) {
+     widget.allPlaylistSong=widget.allPlaylistSong.reversed.toList();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text(widget.name ?? 'untitled'),
-        
+        centerTitle: true,
+        title: Text(widget.name ?? 'untitled'),        
       ),
-      body: SafeArea(
-        child: Scrollbar(
+      body: SafeArea(        
+        child: widget.allPlaylistSong.isEmpty?
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LottieBuilder.asset(
+                'Assets/Animations/no result animation.json',
+                height: 120,
+                width: 120,
+              ),
+              const Text(
+                ' No Songs In Playlist',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 15
+                ),
+              )
+            ],
+          ),
+        )
+        :Scrollbar(         
           child: ListView.separated(
+            
             itemBuilder: (context, index) {
-              final data=widget.allPlaylistSong[index];
+             
+              final data=widget.allPlaylistSong[index];              
               return ListTile(
                         onTap: () {
                           context.read<ArtWorkProvider>().setId(data.image!);                         
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
-                              audioplayer: audioPlayer,
                               songsList: widget.allPlaylistSong,
                               songindex: index,                              
                             );
@@ -81,7 +107,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                         ),
                         trailing: IconButton(
                             onPressed: () {
-                              playlistSongsOptions(context, data, index, audioPlayer, widget.allPlaylistSong,widget.name,data.id);                   
+                              playlistSongsOptions(context,data,index,widget.allPlaylistSong,data.id);                   
                             },
                             icon: Icon(Icons.more_vert)
                         ),
