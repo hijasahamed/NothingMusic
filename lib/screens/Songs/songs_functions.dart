@@ -149,3 +149,25 @@ songsBottomSheet(context,songs,index,audioPlayer) {
       )
     );
   }
+
+  loopOnSnackbar(ctx){
+    return ScaffoldMessenger.of(ctx).showSnackBar(
+      const SnackBar(
+        content: Center(child: Text('Loop On',style: TextStyle(fontSize: 15,),)), 
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        width: 150,
+      )
+    );
+  }
+
+  loopOffSnackbar(ctx){
+    return ScaffoldMessenger.of(ctx).showSnackBar(
+      const SnackBar(
+        content: Center(child: Text('Loop Off',style: TextStyle(fontSize: 15,),)), 
+        behavior: SnackBarBehavior.floating,
+        duration: Duration(milliseconds: 1500),
+        width: 150,
+      )
+    );
+  }

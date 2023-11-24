@@ -71,7 +71,6 @@ class _RecentplayedState extends State<Recentplayed> {
                   final data=recentsongslist[index];
                   return ListTile(
                     onTap: () {
-                      context.read<ArtWorkProvider>().setId(data.image!);
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
                           return NowPlayingScreen(songsList: allsongs, songindex: index);
@@ -122,7 +121,7 @@ class _RecentplayedState extends State<Recentplayed> {
                   );                
                 }), 
                 separatorBuilder: (ctx,index){
-                  return Divider();
+                  return SizedBox(height: 10,);
                 }, 
                 itemCount: recentsongslist.length
               ); 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:just_audio_background/just_audio_background.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
@@ -42,8 +43,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   void initState() {
-    // context.read<ArtWorkProvider>().setId(widget.songsList[widget.songindex].image!);
     super.initState();
+    listenToSongIndex();
+    listenToEvent(); 
     playSong(); 
   }
 
@@ -54,13 +56,17 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
     try{
       for(var elements in widget.songsList){
         allSonglist.add(AudioSource.uri(
-          Uri.parse(elements.uri)
+          Uri.parse(elements.uri.toString()),
+          tag: MediaItem(
+            id: elements.id.toString(), 
+            album: elements.artist.toString(), 
+            title: elements.title.toString(),
+          ),
         ));
       }
       audioPlayerAudio.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex);
       audioPlayerAudio.play();
-      listenToSongIndex();
-      listenToEvent();
+      
       
     }
     on Exception catch (_){
@@ -291,12 +297,14 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                               loopMode=!loopMode;
                               if(loopMode){
                                 audioPlayerAudio.setLoopMode(LoopMode.all);
+                                loopOnSnackbar(context);
                               }
                               else{
                                 audioPlayerAudio.setLoopMode(LoopMode.off);
+                                loopOffSnackbar(context);
                               }           
                             }, 
-                            icon: loopMode? Icon(Icons.repeat_one,color: Colors.blue,) :Icon(Icons.repeat)
+                            icon: loopMode? Icon(Icons.repeat,color: Colors.blue,) :Icon(Icons.repeat)
                           ),
                         ],
                       ),

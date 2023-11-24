@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
-import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:provider/provider.dart';
 
 class Selectedplaylist extends StatefulWidget {
-  Selectedplaylist({super.key,required this.allPlaylistSong,required this.name});
+  Selectedplaylist({super.key,required this.allPlaylistSong,required this.name,required this.playlistid}); 
   
    List allPlaylistSong;
- final String? name;
+   var  playlistid;
+   final String? name;
 
   @override
   State<Selectedplaylist> createState() => _SelectedplaylistState();
 }
 
 class _SelectedplaylistState extends State<Selectedplaylist> {
-
 
 
   @override
@@ -56,12 +56,10 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
         :Scrollbar(         
           child: ListView.separated(
             
-            itemBuilder: (context, index) {
-             
+            itemBuilder: (context, index) {             
               final data=widget.allPlaylistSong[index];              
               return ListTile(
-                        onTap: () {
-                          context.read<ArtWorkProvider>().setId(data.image!);                         
+                        onTap: () {                        
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
@@ -107,7 +105,12 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                         ),
                         trailing: IconButton(
                             onPressed: () {
-                              playlistSongsOptions(context,data,index,widget.allPlaylistSong,data.id);                   
+                              var song=PlayListModel(artist: data.artist,image: data.image,title: data.title,uri: data.uri);
+                             
+                               playlistSongsOptions(context,song,index,widget.allPlaylistSong,widget.playlistid,widget.name);
+                          
+                              
+                                                                            
                             },
                             icon: Icon(Icons.more_vert)
                         ),
@@ -122,4 +125,112 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
       ),
     );
   }
+
+   playlistSongsOptions(context,songs,index,list,id,name) {
+    print('hashiq $id');
+    showModalBottomSheet(
+        backgroundColor: Color.fromARGB(255, 35, 35, 35),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        )),
+        context: context,
+        builder: (BuildContext context) {
+          return Container(
+            height: 270,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 35, left: 35),
+                  child: Column(
+                    children: [
+                      Text(
+                        songs.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                      Text(
+                        "${songs.artist}",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 40,
+                  thickness: 1,
+                  indent: 30,
+                  endIndent: 30,
+                  color: Colors.white,
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (context) {
+                      return NowPlayingScreen(
+                        songsList: list,
+                        songindex: index,                        
+                      );
+                    }));
+                  },
+                  leading: Icon(
+                    Icons.play_circle,
+                    color: Colors.white,
+                  ),
+                  title: Text('Play',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+                ListTile(
+                  onTap: () {
+                    addToFavDBBottomSheet(songs,context);
+                  },
+                  leading: Icon(
+                    Icons.favorite_rounded,
+                    color: Colors.white,
+                  ),
+                  title: Text('Add to Favourite',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+                ListTile(
+                  onTap: () {
+                    Navigator.pop(context);                    
+                    setState(() {
+                       deleteplaylistsongs(list, index, name, id);
+                    });                   
+                    playlistSongdeleted(context);
+                  },
+                  leading: Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                  title: Text('Remove from Playlist',
+                      style: TextStyle(color: Colors.white, fontSize: 20)),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+   deleteplaylistsongs(list,index, name,int id) async {
+  final db = await Hive.openBox<PlayListModel >('playlist');
+  list.removeAt(index);
+  final a = PlayListModel (id: id, name: name, songsList: list);
+  await db.put(id, a);
+  setState(() {
+    widget.allPlaylistSong=list;
+  });
+  getAllPlaylist(); 
+  }
+
+
+
 }

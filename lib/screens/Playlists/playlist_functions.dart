@@ -152,15 +152,16 @@ import 'package:on_audio_query/on_audio_query.dart';
               child: Text('Cancel')
             ),
             TextButton(
-              onPressed: (){
+              onPressed: () async {
                 if(formkey.currentState!.validate()){
                   final editedName=editNameController.text.trim();
                   if(editedName.isEmpty){
                     return;
-                  }
-                  Navigator.pop(context);
-                  final value=PlayListModel(name: name,id: id,songsList: list);
-                  playlistEdit(value, id);
+                  }                  
+                  final value=PlayListModel(name: editedName,id: id,songsList: list);
+                  await playlistEdit(value, id);
+                  Navigator.pop(context); 
+                  playListNameEdited(ctx);
                   editNameController.clear();
                 }
               }, 
@@ -236,16 +237,18 @@ import 'package:on_audio_query/on_audio_query.dart';
                                     borderRadius: BorderRadius.circular(20)),
                                 width: double.infinity,
                                 height: 70,
-                                child: Row(                                
+                                child: Row(                             
                                   children: [
                                     SizedBox(width: 20,),
-                                    Icon(Icons.add,color: Colors.red,),
+                                    Icon(Icons.playlist_add,color: Color.fromARGB(255, 129, 25, 17),size: 40,),
                                     SizedBox(width: 10,),
                                     Text(
                                       playlist.name ?? '',
                                       style: const TextStyle(
                                           fontSize: 20,
-                                          color: Colors.white),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w600
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -265,10 +268,11 @@ import 'package:on_audio_query/on_audio_query.dart';
 
   addlist(int id, String name, list, PlayListModel  value,context) async {
     final db = await Hive.openBox<PlayListModel>('playlist_db');
+    value.id=id;
     if (!list.any((item) => item.uri == value.uri)) {
-      list.add(value);    
-      final a =PlayListModel (id: id, name: name, songsList: list);
-      await db.put(id, a);
+      list.add(value);
+      final updatedPlaylist =PlayListModel (id: id, name: name, songsList: list);
+      await db.put(id, updatedPlaylist);
       addedToPlaylist(context);
     }
     else{
@@ -277,111 +281,9 @@ import 'package:on_audio_query/on_audio_query.dart';
     getAllPlaylist();
   }
 
-  playlistSongsOptions(context,songs,index,list,id) {
-    showModalBottomSheet(
-        backgroundColor: Color.fromARGB(255, 35, 35, 35),
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        )),
-        context: context,
-        builder: (BuildContext context) {
-          return Container(
-            height: 270,
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 10,
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 35, left: 35),
-                  child: Column(
-                    children: [
-                      Text(
-                        songs.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                      Text(
-                        "${songs.artist}",
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-                Divider(
-                  height: 40,
-                  thickness: 1,
-                  indent: 30,
-                  endIndent: 30,
-                  color: Colors.white,
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return NowPlayingScreen(
-                        songsList: list,
-                        songindex: index,                        
-                      );
-                    }));
-                  },
-                  leading: Icon(
-                    Icons.play_circle,
-                    color: Colors.white,
-                  ),
-                  title: Text('Play',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-                ListTile(
-                  onTap: () {
-                    addToFavDBBottomSheet(songs,context);
-                  },
-                  leading: Icon(
-                    Icons.favorite_rounded,
-                    color: Colors.white,
-                  ),
-                  title: Text('Add to Favourite',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-                ListTile(
-                  onTap: () {
-                    Navigator.pop(context);
-                    deleteplaylistsong(list,index);
-                    playlistSongdeleted(context);
-                  },
-                  leading: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                  title: Text('Remove from Playlist',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                ),
-              ],
-            ),
-          );
-        });
-  }
+ 
 
-  // deleteplaylistsongs(list,index, name,id) async {
-  // final db = await Hive.openBox<PlayListModel >('playlist');
-  // list.removeAt(index);
-  // final a = PlayListModel (id: id, name: name, songsList: list);
-  // await db.put(id, a);
-  // getAllPlaylist(); 
-  // }
-
-  deleteplaylistsong(list ,index,)async{
-    final refrehingDbList= await Hive.openBox<PlayListModel>('playlist_db');
-    list.removeAt(index);
-    getAllPlaylist();
-  }
-
+ 
 
 
 //scaffold messages//
@@ -454,4 +356,15 @@ import 'package:on_audio_query/on_audio_query.dart';
         ),
       ),
     ));
+  }
+
+  playListNameEdited(ctx){
+    ScaffoldMessenger.of(ctx).showSnackBar(
+       const SnackBar(
+        content: Center(child: Text('Playlist Updated',style: TextStyle(fontSize: 15),)),
+        behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(50),
+        duration: Duration(seconds: 2),
+      )
+    );
   }

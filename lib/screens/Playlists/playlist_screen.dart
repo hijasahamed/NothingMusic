@@ -12,246 +12,121 @@ class Playlistscreen extends StatefulWidget {
 }
 
 class _PlaylistscreenState extends State<Playlistscreen> {
-
-    
   @override
   Widget build(BuildContext context) {
-    /*return Scaffold(
+    return Scaffold(
       backgroundColor: Colors.black,
       body: SafeArea(
-        child: SingleChildScrollView(
           child: Padding(
-            padding:const EdgeInsets.all(7),
-            child: Column(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Wrap(
+              spacing: 12,
               children: [
-                SizedBox(                   
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Ink(
-                            height: 160,
-                            width: 180,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              image: DecorationImage(
-                                  image: AssetImage('Assets/images/earphone.webp'),
-                                  fit: BoxFit.fill),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.white12,
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Recentplayed();}));
-                              },
-                              child: Container(
-                                height: 160,
-                                width: double.infinity,
-                                color: Colors.black12 ,
-                                child: const Center(
-                                  child:  Text(
-                                    'Recent Played',
-                                    style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 20),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Ink(
-                            height: 160,
-                            width: 180,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                              image: DecorationImage(
-                                  image: AssetImage('Assets/images/earphone.webp'),
-                                  fit: BoxFit.fill),
-                            ),
-                            child: InkWell(
-                              splashColor: Colors.white12,
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Mostplayed();})); 
-                              },
-                              child: Container(
-                                height: double.infinity,
-                                width: double.infinity,
-                                color: Colors.black12,
-                                child:const Center(
-                                    child: Text(
-                                  'Most Played',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 20),
-                                )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const Divider(
-                        color: Color.fromARGB(255, 110, 19, 19), 
-                        thickness: 2,
-                        height: 25,
-                      ),
-                    ],
+                Ink(
+                  height: 160,
+                  width: 180,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    image: DecorationImage(
+                        image: AssetImage('Assets/images/earphone.webp'),
+                        fit: BoxFit.fill),
                   ),
-                ),
-              
-                const SizedBox(
-                  height: 390,
-                  width: double.infinity,
-                  child: PlaylistCreatedScreen(), 
-                ),
-  
-                SizedBox(                
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Ink(
-                      height: 60,
-                      width: 60,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Color.fromARGB(255, 59, 59, 58),
-                      ),
-                      child: InkWell(
-                        splashColor: Colors.white12,
-                        onTap: () {
-                          createPlaylist(context,playListNameController);
-                        },
-                        child: const Icon(
-                          Icons.playlist_add,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-            
-            
-              ],
-            ),
-          ),
-        )
-      ),
-    );*/
-
-    return  Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Wrap(
-                spacing: 12,
-                children: [
-                  Ink(
-                    height: 160,
-                    width: 180,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      image: DecorationImage(
-                          image: AssetImage('Assets/images/earphone.webp'),
-                          fit: BoxFit.fill),
-                    ),
-                    child: InkWell(
-                      splashColor: Colors.white12,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Recentplayed();}));
-                      },
-                      child: Container(
-                        height: 160,
-                        width: double.infinity,
-                        color: Colors.black12 ,
-                        child: const Center(
-                          child:  Text(
-                            'Recent Played',
-                            style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 20),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Ink(
-                    height: 160,
-                    width: 180,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      image: DecorationImage(
-                          image: AssetImage('Assets/images/earphone.webp'),
-                          fit: BoxFit.fill),
-                    ),
-                    child: InkWell(
-                      splashColor: Colors.white12,
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (contex){ return const Mostplayed();})); 
-                      },
-                      child: Container(
-                        height: double.infinity,
-                        width: double.infinity,
-                        color: Colors.black12,
-                        child:const Center(
-                            child: Text(
-                          'Most Played',
+                  child: InkWell(
+                    splashColor: Colors.white12,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (contex) {
+                        return const Recentplayed();
+                      }));
+                    },
+                    child: Container(
+                      height: 160,
+                      width: double.infinity,
+                      color: Colors.black12,
+                      child: const Center(
+                        child: Text(
+                          'Recent Played',
                           style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w800,
                               fontSize: 20),
-                        )),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const Divider(
-                color: Color.fromARGB(255, 110, 19, 19), 
-                thickness: 2,
-                height: 25,
-              ),
-              Expanded(
-                flex: 8,
-                child: PlaylistCreatedScreen()
-              ),
-              Expanded(
-                flex: 2,
-                child: SizedBox(                
-                  child: Align(
-                    alignment: Alignment.centerRight,
-                    child: Ink(
-                      height: 60,
-                      width: 60,
-                      decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Color.fromARGB(255, 59, 59, 58),
-                      ),
-                      child: InkWell(
-                        splashColor: Colors.white12,
-                        onTap: () {
-                          createPlaylist(context,playListNameController);
-                        },
-                        child: const Icon(
-                          Icons.playlist_add,
-                          color: Colors.white,
-                          size: 30,
                         ),
                       ),
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
-        )
-      ),
+                Ink(
+                  height: 160,
+                  width: 180,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    image: DecorationImage(
+                        image: AssetImage('Assets/images/earphone.webp'),
+                        fit: BoxFit.fill),
+                  ),
+                  child: InkWell(
+                    splashColor: Colors.white12,
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (contex) {
+                        return const Mostplayed();
+                      }));
+                    },
+                    child: Container(
+                      height: double.infinity,
+                      width: double.infinity,
+                      color: Colors.black12,
+                      child: const Center(
+                          child: Text(
+                        'Most Played',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 20),
+                      )),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const Divider(
+              color: Color.fromARGB(255, 110, 19, 19),
+              thickness: 2,
+              height: 25,
+            ),
+            Expanded(flex: 8, child: PlaylistCreatedScreen()),
+            Expanded(
+              flex: 2,
+              child: SizedBox(
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Ink(
+                    height: 60,
+                    width: 60,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Color.fromARGB(255, 59, 59, 58),
+                    ),
+                    child: InkWell(
+                      splashColor: Colors.white12,
+                      onTap: () {
+                        createPlaylist(context, playListNameController);
+                      },
+                      child: const Icon(
+                        Icons.playlist_add,
+                        color: Colors.white,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      )),
     );
-
-
   }
 }

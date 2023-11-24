@@ -100,8 +100,7 @@ class _SongsscreenState extends State<Songsscreen> {
                       final songs = songbox[index];
                       final playingIndex=isIndexPlaying(index); 
                       return ListTile(
-                        onTap: () {
-                          // context.read<ArtWorkProvider>().setId(songs.image!);                         
+                        onTap: () {                      
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
@@ -158,7 +157,7 @@ class _SongsscreenState extends State<Songsscreen> {
                         ),
                       );
                     },
-                    separatorBuilder: ((context, index) => const Divider()),
+                    separatorBuilder: ((context, index) => const SizedBox(height: 10,)),
                     itemCount: songbox.length,
                   );
                 }

@@ -59,10 +59,12 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                   builder: (contex){ 
                     return Selectedplaylist(
                       allPlaylistSong: data.songsList!,
+                      playlistid: data.id,
                       name: data.name,
                     );
                   })
-                ); 
+                );
+                print('playlist id=${data.id}'); 
               },
               child: Column(
                 children: [                             
@@ -76,9 +78,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                           playlistNameEdit(context,data.id,data.name,data.songsList);
                         } 
                         else if (value == 'delete') {
-                          // removePlaylist(data.id!);
-                          deleteThePlaylist(data.id, context, data.name);
-                          
+                          deleteThePlaylist(data.id, context, data.name);                          
                         }
                       },
                       icon: const Icon(

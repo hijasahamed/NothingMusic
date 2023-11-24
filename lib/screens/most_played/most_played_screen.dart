@@ -71,7 +71,6 @@ class _MostplayedState extends State<Mostplayed> {
                   final data=mostPlayedsongslist[index];
                   return ListTile(
                     onTap: () {
-                      context.read<ArtWorkProvider>().setId(data.image!);
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
                           return NowPlayingScreen(songsList: allsongs, songindex: index);
@@ -122,7 +121,7 @@ class _MostplayedState extends State<Mostplayed> {
                   );                
                 }), 
                 separatorBuilder: (ctx,index){
-                  return const Divider();
+                  return const SizedBox(height: 10,);
                 }, 
                 itemCount: mostPlayedsongslist.length
               ); 

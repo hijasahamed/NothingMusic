@@ -70,7 +70,6 @@ class _FavouritescreenState extends State<Favouritescreen> {
                 final  data=favouriteSongs[index];           
                 return ListTile(
                   onTap: (){
-                    context.read<ArtWorkProvider>().setId(data.image!);
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context){
                         return NowPlayingScreen(songsList: allSongs, songindex: index);
@@ -121,7 +120,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                       )),
                 );
               },
-              separatorBuilder: ((context, index) =>const Divider()), 
+              separatorBuilder: ((context, index) =>const SizedBox(height: 10,)), 
               itemCount: favouriteSongs.length,
             );
           }
