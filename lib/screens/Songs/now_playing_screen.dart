@@ -14,16 +14,16 @@ import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 
 class NowPlayingScreen extends StatefulWidget {
-  const NowPlayingScreen({super.key,required this.songsList,required this.songindex});
+   NowPlayingScreen({super.key,required this.songsList,required this.songindex,});
  
 
  final List songsList;
  final int songindex;
-
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -41,15 +41,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   List<AudioSource> allSonglist=[];
   int currentindex=0;
 
+  Map<String, Duration> playbackPositions = {};
+
   @override
   void initState() {
     super.initState();
-    listenToSongIndex();
-    listenToEvent(); 
-    playSong(); 
+    playSong();
   }
 
-  playSong(){
+
+  playSong()async{
     if(!mounted){
       return;
     }
@@ -64,8 +65,18 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           ),
         ));
       }
-      audioPlayerAudio.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex);
-      audioPlayerAudio.play();
+
+      bool isCurrentlyPlayingSong =audioPlayerAudio.currentIndex == widget.songindex &&audioPlayerAudio.playing;
+
+      Duration initialPosition =isCurrentlyPlayingSong ? await audioPlayerAudio.position: Duration.zero;
+
+       await audioPlayerAudio.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex,initialPosition: initialPosition);
+      if (!isCurrentlyPlayingSong) {
+        audioPlayerAudio.play();
+      }
+
+      listenToSongIndex();
+      listenToEvent();
       
       
     }
@@ -125,6 +136,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
               currentindex=event;
               context.read<ArtWorkProvider>().setId(widget.songsList[currentindex].image!);
               
+              
               var recentsong= AudioModel(
                 image: widget.songsList[currentindex].image, 
                 title: widget.songsList[currentindex].title, 
@@ -146,11 +158,25 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool isSongInDatabase(String uri) {
   final favSongBox = Hive.box<FavAudioModel>('fav_song_db');
   return favSongBox.values.any((element) => element.uri == uri);
-}
+  }
+
+  Future<Duration> getStoredPlaybackPosition(String uri) async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedPosition = prefs.getInt('playback_position_$uri') ?? 0;
+    return Duration(seconds: storedPosition);
+  }
+
+  Future<void> savePlaybackPosition(String uri, Duration position) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setInt('playback_position_$uri', position.inSeconds);
+  }
 
   @override
   void dispose() {
-    // widget.audioplayer.stop();
+    final currentUri = widget.songsList[currentindex].uri;
+    playbackPositions[currentUri] = position;
+    savePlaybackPosition(currentUri, position);
+
     audioPlayerAudio.setShuffleModeEnabled(false);
     audioPlayerAudio.setLoopMode(LoopMode.off); 
     super.dispose();

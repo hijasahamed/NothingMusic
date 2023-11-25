@@ -7,6 +7,6 @@ class ArtWorkProvider with ChangeNotifier {
 
   void setId(int id) {
     _id = id;
-    notifyListeners();
-  }
+    notifyListeners();     
+  } 
 }

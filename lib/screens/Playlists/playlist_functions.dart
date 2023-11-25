@@ -1,12 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
-import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_functions.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
-import 'package:on_audio_query/on_audio_query.dart';
-
 
   ValueNotifier<List<PlayListModel>> playlistNameNotifier=ValueNotifier([]);
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();

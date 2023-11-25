@@ -8,11 +8,11 @@ import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Selectedplaylist extends StatefulWidget {
-  Selectedplaylist({super.key,required this.allPlaylistSong,required this.name,required this.playlistid}); 
+  Selectedplaylist({super.key,required this.allPlaylistSong,required this.playlistname,required this.playlistid}); 
   
-   List allPlaylistSong;
-   var  playlistid;
-   final String? name;
+  List allPlaylistSong;
+  final playlistid; 
+  final String? playlistname;
 
   @override
   State<Selectedplaylist> createState() => _SelectedplaylistState();
@@ -20,16 +20,15 @@ class Selectedplaylist extends StatefulWidget {
 
 class _SelectedplaylistState extends State<Selectedplaylist> {
 
-
   @override
   Widget build(BuildContext context) {
      widget.allPlaylistSong=widget.allPlaylistSong.reversed.toList();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor:const Color.fromARGB(255, 35, 35, 35),
         centerTitle: true,
-        title: Text(widget.name ?? 'untitled'),        
+        title: Text(widget.playlistname ?? 'untitled'),        
       ),
       body: SafeArea(        
         child: widget.allPlaylistSong.isEmpty?
@@ -93,7 +92,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                           data.title,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style:const TextStyle(
                             color: Colors.white,
                           ),
                         ),
@@ -101,23 +100,23 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                           "${data.artist}",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(color: Colors.white), 
+                          style:const TextStyle(color: Colors.white), 
                         ),
                         trailing: IconButton(
                             onPressed: () {
                               var song=PlayListModel(artist: data.artist,image: data.image,title: data.title,uri: data.uri);
                              
-                               playlistSongsOptions(context,song,index,widget.allPlaylistSong,widget.playlistid,widget.name);
+                               playlistSongsOptions(context,song,index,widget.allPlaylistSong,widget.playlistid,widget.playlistname);
                           
                               
                                                                             
                             },
-                            icon: Icon(Icons.more_vert)
+                            icon:const Icon(Icons.more_vert)
                         ),
                       );
             }, 
             separatorBuilder: (context, index) {
-              return Divider();
+              return const SizedBox(height:10 ,); 
             }, 
             itemCount: widget.allPlaylistSong.length
           ),
@@ -126,10 +125,9 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
     );
   }
 
-   playlistSongsOptions(context,songs,index,list,id,name) {
-    print('hashiq $id');
+   playlistSongsOptions(context,songs,index,allPlaylistSong,playlistid,playlistname)async {
     showModalBottomSheet(
-        backgroundColor: Color.fromARGB(255, 35, 35, 35),
+        backgroundColor:const Color.fromARGB(255, 35, 35, 35),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
@@ -137,7 +135,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
         )),
         context: context,
         builder: (BuildContext context) {
-          return Container(
+          return  SizedBox(
             height: 270,
             child: Column(
               children: [
@@ -145,25 +143,25 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                   height: 10,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 35, left: 35),
+                  padding:const EdgeInsets.only(right: 35, left: 35),
                   child: Column(
                     children: [
                       Text(
                         songs.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style:const TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       Text(
                         "${songs.artist}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(color: Colors.white),
+                        style:const TextStyle(color: Colors.white),
                       ),
                     ],
                   ),
                 ),
-                Divider(
+                const Divider(
                   height: 40,
                   thickness: 1,
                   indent: 30,
@@ -176,42 +174,42 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return NowPlayingScreen(
-                        songsList: list,
+                        songsList: allPlaylistSong,
                         songindex: index,                        
                       );
                     }));
                   },
-                  leading: Icon(
+                  leading:const Icon(
                     Icons.play_circle,
                     color: Colors.white,
                   ),
-                  title: Text('Play',
+                  title:const Text('Play',
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
                 ListTile(
                   onTap: () {
                     addToFavDBBottomSheet(songs,context);
                   },
-                  leading: Icon(
+                  leading:const Icon(
                     Icons.favorite_rounded,
                     color: Colors.white,
                   ),
-                  title: Text('Add to Favourite',
+                  title:const Text('Add to Favourite',
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
                 ListTile(
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);                    
                     setState(() {
-                       deleteplaylistsongs(list, index, name, id);
+                       deletePlaylistSongs(index,allPlaylistSong,playlistid,playlistname);
                     });                   
-                    playlistSongdeleted(context);
+                    await playlistSongdeleted(context);
                   },
-                  leading: Icon(
+                  leading:const Icon(
                     Icons.delete,
                     color: Colors.white,
                   ),
-                  title: Text('Remove from Playlist',
+                  title:const Text('Remove from Playlist',
                       style: TextStyle(color: Colors.white, fontSize: 20)),
                 ),
               ],
@@ -220,17 +218,18 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
         });
   }
 
-   deleteplaylistsongs(list,index, name,int id) async {
-  final db = await Hive.openBox<PlayListModel >('playlist');
-  list.removeAt(index);
-  final a = PlayListModel (id: id, name: name, songsList: list);
-  await db.put(id, a);
-  setState(() {
-    widget.allPlaylistSong=list;
-  });
-  getAllPlaylist(); 
+  Future<void>deletePlaylistSongs(index,allPlaylistSong,playlistid,playlistname) async {
+    final db = await Hive.openBox<PlayListModel >('playlist');
+    allPlaylistSong.removeAt(index);
+    setState(() {
+      widget.allPlaylistSong = List.from(allPlaylistSong); 
+    });
+    final updatedValue = PlayListModel (id: playlistid, name: playlistname, songsList: allPlaylistSong);
+    await db.put(playlistid,updatedValue);
+        
+    await getAllPlaylist(); 
   }
 
-
+  
 
 }

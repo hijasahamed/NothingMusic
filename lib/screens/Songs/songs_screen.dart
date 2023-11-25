@@ -25,6 +25,8 @@ class _SongsscreenState extends State<Songsscreen> {
 
   bool isPlaying=true;
 
+  NowPlayingScreen? nowPlayingScreen;
+
 
   @override
   void initState() {
@@ -58,6 +60,7 @@ class _SongsscreenState extends State<Songsscreen> {
     return audioPlayerAudio.currentIndex == index && audioPlayerAudio.playing;
   }
   
+  bool resume=true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -101,14 +104,28 @@ class _SongsscreenState extends State<Songsscreen> {
                       final playingIndex=isIndexPlaying(index); 
                       return ListTile(
                         onTap: () {                      
-                          Navigator.of(context)
+                          // Navigator.of(context)
+                          //     .push(MaterialPageRoute(builder: (context) {
+                          //   return NowPlayingScreen(                              
+                          //     songsList: allSongs,
+                          //     songindex: index,                              
+                          //   );
+                          // }));
+                          if(nowPlayingScreen==null){
+                            Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
                               songsList: allSongs,
                               songindex: index,                              
                             );
                           }));
-                        },
+                          }
+                          else{
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                              return nowPlayingScreen!;
+                            }));
+                          }
+                        },                    
                         leading: QueryArtworkWidget(
                           id: songs.image!,
                           type: ArtworkType.AUDIO,

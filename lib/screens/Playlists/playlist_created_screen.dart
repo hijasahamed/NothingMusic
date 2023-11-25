@@ -57,10 +57,10 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (contex){ 
-                    return Selectedplaylist(
+                    return Selectedplaylist( 
                       allPlaylistSong: data.songsList!,
                       playlistid: data.id,
-                      name: data.name,
+                      playlistname: data.name,
                     );
                   })
                 );
