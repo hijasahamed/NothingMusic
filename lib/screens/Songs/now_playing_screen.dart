@@ -28,10 +28,12 @@ class NowPlayingScreen extends StatefulWidget {
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
 }
+bool isPlaying = true;
+int currentindex=0;
 
 class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
-  bool _isPlaying = true;
+  
   Duration duration=Duration.zero;
   Duration position=Duration.zero;
   bool _isFavourite=false;
@@ -39,7 +41,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool loopMode=false;
 
   List<AudioSource> allSonglist=[];
-  int currentindex=0;
+  
 
   Map<String, Duration> playbackPositions = {};
 
@@ -67,8 +69,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       }
 
       bool isCurrentlyPlayingSong =audioPlayerAudio.currentIndex == widget.songindex &&audioPlayerAudio.playing;
-
-      Duration initialPosition =isCurrentlyPlayingSong ? await audioPlayerAudio.position: Duration.zero;
+      Duration initialPosition =isCurrentlyPlayingSong ? audioPlayerAudio.position: Duration.zero;
 
        await audioPlayerAudio.setAudioSource(ConcatenatingAudioSource(children: allSonglist),initialIndex: widget.songindex,initialPosition: initialPosition);
       if (!isCurrentlyPlayingSong) {
@@ -110,16 +111,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       if(mounted){
         if (state.playing) {
         setState(() {
-          _isPlaying = true;
+          isPlaying = true;
         });
       } else {
         setState(() {
-          _isPlaying = false;
+          isPlaying = false;
         });
       }
       if (state.processingState == ProcessingState.completed) {
         setState(() {
-          _isPlaying = false; 
+          isPlaying = false; 
 
         });
       }
@@ -298,16 +299,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                             child: IconButton(
                               onPressed: (){
                                 setState(() {
-                                  if(_isPlaying){
+                                  if(isPlaying){
                                     audioPlayerAudio.pause();
                                   }
                                   else{
                                     audioPlayerAudio.play();
                                   }
-                                  _isPlaying = !_isPlaying; 
+                                  isPlaying = !isPlaying; 
                                 });
                               }, 
-                              icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
                             ),
                           ),
                           IconButton(

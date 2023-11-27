@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Drawer/about_screen.dart';
@@ -29,6 +30,7 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
+    getAllSongs();
     getAllFavSong();
     gettAllRecentSongs();
     getAllMostPlayedSongs();
@@ -219,7 +221,7 @@ class _HomescreenState extends State<Homescreen> {
                                         return Privacyandpolicy();
                                       }));
                                     },
-                                    child: Row(
+                                    child: const Row(
                                       children: [
                                         Icon(
                                           Icons.privacy_tip_outlined,
@@ -240,16 +242,14 @@ class _HomescreenState extends State<Homescreen> {
                               ],
                             ),
                           )),
-                      Flexible(
+                       const Flexible(
                           flex: 1,
-                          child: Container(
-                            child: Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Text(
-                                'Version 1.0',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
+                          child: Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              'Version 1.0',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                           )),
                     ],

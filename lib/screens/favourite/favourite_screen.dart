@@ -3,6 +3,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Songs/mini_player.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -74,7 +75,8 @@ class _FavouritescreenState extends State<Favouritescreen> {
                       MaterialPageRoute(builder: (context){
                         return NowPlayingScreen(songsList: allSongs, songindex: index);
                       })
-                    );                    
+                    ); 
+                                    
                   },
                   leading: QueryArtworkWidget(
                     id: data.image!,
