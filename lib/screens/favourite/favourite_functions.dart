@@ -5,6 +5,7 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/favourite/favourite_screen.dart';
 
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,7 @@ getAllFavSong()async{
   favoriteSongNotifier.value.clear();
   favoriteSongNotifier.value.addAll(favsongbox.values);
   favoriteSongNotifier.notifyListeners();
+  getAllFavSongFromDb();
 }
 
 removeFavSong(int id)async{
@@ -32,14 +34,14 @@ removeFavSong(int id)async{
     getAllFavSong();
 }
 
-// removeWithUri(String uri)async{ 
-//   final favsongbox= await Hive.openBox<FavAudioModel>('Fav_song_db');
-//   await favsongbox.delete(uri);
-//   getAllFavSong();
-// }
+getAllFavSongFromDb()async{
+  final favsongbox= await Hive.openBox<FavAudioModel>('Fav_song_db');
+  final List<FavAudioModel> songList=favsongbox.values.toList();
+  allFavSongs.clear();
+  allFavSongs.addAll(songList.reversed);
+}
 
-
-favBottomSheeet(context,data,index,audioPlayer,allSongsvv){
+favBottomSheeet(context,data,index,allSongsvv){ 
     showModalBottomSheet(
       backgroundColor: Color.fromARGB(255, 35, 35, 35),
       shape: const RoundedRectangleBorder(

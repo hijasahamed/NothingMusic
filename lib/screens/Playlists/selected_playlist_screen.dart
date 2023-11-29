@@ -28,7 +28,8 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
       appBar: AppBar(
         backgroundColor:const Color.fromARGB(255, 35, 35, 35),
         centerTitle: true,
-        title: Text(widget.playlistname ?? 'untitled'),        
+        title: Text(widget.playlistname ?? 'untitled',style:TextStyle(fontWeight: FontWeight.w700,color: Colors.white) ,),
+                
       ),
       body: SafeArea(        
         child: widget.allPlaylistSong.isEmpty?

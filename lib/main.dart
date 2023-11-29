@@ -12,10 +12,15 @@ import 'package:provider/provider.dart';
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  
+   runApp(ChangeNotifierProvider(create: (context) => ArtWorkProvider(), 
+   child: const MyApp(),
+  )
+);
     Hive.registerAdapter(AudioModelAdapter());
     Hive.registerAdapter(FavAudioModelAdapter());
     Hive.registerAdapter(PlayListModelAdapter());
+  await Hive.openBox<AudioModel>('songs_db');
+  await Hive.openBox<FavAudioModel>('Fav_song_db');
 
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
@@ -23,14 +28,10 @@ Future<void> main() async{
     androidNotificationOngoing: true,
   );  
   
-  await Hive.openBox<AudioModel>('songs_db');
-  await Hive.openBox<FavAudioModel>('Fav_song_db');
+ 
     
    
-  runApp(ChangeNotifierProvider(create: (context) => ArtWorkProvider(), 
-   child: const MyApp(),
-  )
-);
+ 
   
 }
 

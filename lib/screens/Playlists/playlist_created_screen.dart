@@ -47,14 +47,8 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
         ),
         itemBuilder: (ctx, index) { 
           final data=playlistNameList[index];                                              
-          return Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),              
-              color: Color.fromARGB(255, 36, 3, 3),
-            ),
-            child: InkWell(                             
-              splashColor: Colors.white12,
-              onTap: () {
+          return GestureDetector(
+            onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (contex){ 
                     return Selectedplaylist( 
@@ -64,8 +58,12 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                     );
                   })
                 );
-                print('playlist id=${data.id}'); 
-              },
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),              
+                color: Color.fromARGB(255, 36, 3, 3),
+              ),
               child: Column(
                 children: [                             
                   Align(

@@ -17,7 +17,6 @@ class Mostplayed extends StatefulWidget {
 
 class _MostplayedState extends State<Mostplayed> {
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
 
   List allsongs=[];
 
@@ -29,7 +28,7 @@ class _MostplayedState extends State<Mostplayed> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         centerTitle: true,
-        title:const Text('Most Played'),
+        title:const Text('Most Played',style: TextStyle(fontWeight: FontWeight.w700,color: Colors.white),),
         backgroundColor: const Color.fromARGB(255, 35, 35, 35),
       ),
       body: SafeArea(

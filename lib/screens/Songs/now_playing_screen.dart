@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
@@ -40,15 +42,22 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool isshuffle=false;
   bool loopMode=false;
 
+  late StreamSubscription<Duration?> _durationSubscription;
+  late StreamSubscription<Duration?> _positionSubscription;
+  late StreamSubscription<PlayerState> _playerStateSubscription;
+
   List<AudioSource> allSonglist=[];
   
 
   Map<String, Duration> playbackPositions = {};
-
+ 
   @override
   void initState() {
+     checkmount();
     super.initState();
+    listenToSongIndex();
     playSong();
+    listenToEvent();
   }
 
 
@@ -76,8 +85,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         audioPlayerAudio.play();
       }
 
-      listenToSongIndex();
-      listenToEvent();
+      
       
       
     }
@@ -107,7 +115,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   }
 
   void listenToEvent() {
-    audioPlayerAudio.playerStateStream.listen((state) {
+      _playerStateSubscription=  audioPlayerAudio.playerStateStream.listen((state) {
       if(mounted){
         if (state.playing) {
         setState(() {
@@ -121,12 +129,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
       if (state.processingState == ProcessingState.completed) {
         setState(() {
           isPlaying = false; 
-
         });
       }
       }
     });
   } 
+
+  checkmount() {
+    if (mounted) {
+      _durationSubscription =
+          audioPlayerAudio.durationStream.listen((duration) {
+        if (duration != null) {
+          setState(() {
+            duration = duration;
+          });
+        }
+      });
+      _positionSubscription =
+          audioPlayerAudio.positionStream.listen((position) {
+        setState(() {
+          position = position;
+        });
+      });
+    }
+  }
 
   void listenToSongIndex() {
     audioPlayerAudio.currentIndexStream.listen(
@@ -135,7 +161,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
           if(event != null && event >=0 && event <widget.songsList.length){
             setState(() {
               currentindex=event;
-              context.read<ArtWorkProvider>().setId(widget.songsList[currentindex].image!);
+               context.read<ArtWorkProvider>().setId(widget.songsList[currentindex].image!);
               
               
               var recentsong= AudioModel(
@@ -174,12 +200,16 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   void dispose() {
+    allSonglist.clear();
     final currentUri = widget.songsList[currentindex].uri;
     playbackPositions[currentUri] = position;
     savePlaybackPosition(currentUri, position);
-
     audioPlayerAudio.setShuffleModeEnabled(false);
     audioPlayerAudio.setLoopMode(LoopMode.off); 
+    _durationSubscription.cancel();
+    _positionSubscription.cancel();
+    _playerStateSubscription.cancel();
+  
     super.dispose();
   }
 
@@ -197,9 +227,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
             child: Column(
               children: [
           
-                Container(                  
+               const SizedBox(                  
                   child: Center( 
-                    child: const ArtWorkWidget(),
+                    child: ArtWorkWidget(),
                   ),
                 ),
           
@@ -216,6 +246,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           Text(formatTime(position)),
                           Expanded(
                             child: Slider(
+                              activeColor: Colors.blue,
                               min: 0,
                               max: duration.inSeconds.toDouble(),
                               value: position.inSeconds.toDouble(), 
@@ -308,7 +339,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                   isPlaying = !isPlaying; 
                                 });
                               }, 
-                              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+                              icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow,color: Colors.black,),
                             ),
                           ),
                           IconButton(

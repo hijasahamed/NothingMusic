@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:provider/provider.dart';
 
 class MiniPlayer extends StatefulWidget {
   const MiniPlayer({super.key,required this.songsList,});
@@ -14,6 +13,36 @@ class MiniPlayer extends StatefulWidget {
 }
 
 class _MiniPlayerState extends State<MiniPlayer> {
+
+  @override
+  void initState() {
+    listenToEvent();
+    super.initState();
+  }
+
+  void listenToEvent() {
+    audioPlayerAudio.playerStateStream.listen((state) {
+      if(mounted){
+        if (state.playing) {
+        setState(() {
+          isPlaying = true;
+          currentindex = audioPlayerAudio.currentIndex ?? 0; 
+        });
+      } else {
+        setState(() {
+          isPlaying = false;
+        });
+      }
+      if (state.processingState == ProcessingState.completed) {
+        setState(() {
+          isPlaying = false; 
+
+        });
+      }
+      }
+    });
+  } 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -21,7 +50,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           return NowPlayingScreen(
             songsList: allSongs,
-            songindex: audioPlayerAudio.currentIndex ?? 0,
+            songindex: currentindex,
           );
         }));
       },
@@ -31,41 +60,30 @@ class _MiniPlayerState extends State<MiniPlayer> {
           borderRadius: BorderRadius.all(Radius.circular(20))
         ),
         width: double.infinity,
-        height: 80,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            QueryArtworkWidget(
-              id: context.watch<ArtWorkProvider>().id, 
+        height: 75,       
+        child: ListTile(
+          leading: QueryArtworkWidget(
+              id: widget.songsList[currentindex].image, 
               type: ArtworkType.AUDIO,
               artworkHeight: 60,
               artworkWidth: 60,
               artworkFit: BoxFit.fill,
               artworkQuality: FilterQuality.high,
-              artworkBorder: BorderRadius.circular(20),                    
+              artworkBorder: BorderRadius.circular(5),                    
               quality: 100,                    
               nullArtworkWidget: Container(
                 width: 60,
                 height: 60,
                 decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
                     image: DecorationImage(
                         image: AssetImage('Assets/images/music logo.png'),                           
                         fit: BoxFit.fill)),
               ),
             ),
-            Container(
-              width: 250,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis,),
-                  SizedBox(height: 10,),
-                  Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,),
-                ],
-              ),
-            ),
-            IconButton(
+            title: Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis,),
+            subtitle: Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,),
+            trailing: IconButton(
               onPressed: (){
                 setState(() {
                   if(isPlaying){
@@ -77,14 +95,11 @@ class _MiniPlayerState extends State<MiniPlayer> {
                   isPlaying = !isPlaying; 
                 });
               }, 
-              icon: Transform.translate(
-                offset: Offset(-15,-10),
-                child: Expanded(
-                  child: Icon(isPlaying ? Icons.pause : Icons.play_arrow,size: 50,),
-                ),
+              icon: CircleAvatar(
+                backgroundColor: Colors.grey,
+                child: Icon(isPlaying ? Icons.pause : Icons.play_arrow,color: Colors.black,)
               )
             )
-          ],
         ),
       ),
     );

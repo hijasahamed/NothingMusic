@@ -29,7 +29,7 @@ class _RecentplayedState extends State<Recentplayed> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Recent Played'),
+        title: Text('Recent Played',style: TextStyle(fontWeight: FontWeight.w700,color: Colors.white),),
         backgroundColor: Color.fromARGB(255, 35, 35, 35),
       ),
       body: SafeArea(
@@ -63,8 +63,7 @@ class _RecentplayedState extends State<Recentplayed> {
                   ),
                 );
               }
-              recentsongslist=recentsongslist.take(30).toList();
-              allsongs.clear();
+              // recentsongslist=recentsongslist.take(30).toList(); 
               allsongs.addAll(recentsongslist);            
               return ListView.separated(
                 itemBuilder: ((context, index) {

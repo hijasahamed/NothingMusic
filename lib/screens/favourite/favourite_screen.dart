@@ -16,21 +16,10 @@ class Favouritescreen extends StatefulWidget {
   State<Favouritescreen> createState() => _FavouritescreenState();
 }
 
+ List allFavSongs=[];
+
 class _FavouritescreenState extends State<Favouritescreen> {
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-
-  playSong(String? uri) {
-    try {
-      _audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
-      _audioPlayer.play();
-    } on Exception {
-      print('error');
-    }
-  }
-
-  List allSongs=[];
 
 
   @override
@@ -64,18 +53,19 @@ class _FavouritescreenState extends State<Favouritescreen> {
                   ],
                 ),
               );
-            }
-            allSongs.addAll(favouriteSongs);
+            }            
             return ListView.separated(
               itemBuilder: (ctx, index) {
                 final  data=favouriteSongs[index];           
                 return ListTile(
+                  splashColor: Colors.transparent,
                   onTap: (){
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context){
-                        return NowPlayingScreen(songsList: allSongs, songindex: index);
+                        return NowPlayingScreen(songsList: allFavSongs, songindex: index);
                       })
-                    ); 
+                    );
+                    MiniPlayer(songsList: allFavSongs); 
                                     
                   },
                   leading: QueryArtworkWidget(
@@ -114,7 +104,7 @@ class _FavouritescreenState extends State<Favouritescreen> {
                   trailing: IconButton(
                       splashRadius: 25,
                       onPressed: () {
-                        favBottomSheeet(context,data,index,_audioPlayer,allSongs);                    
+                        favBottomSheeet(context,data,index,allFavSongs);                    
                       },
                       icon: const Icon(
                         Icons.more_vert,
@@ -133,3 +123,4 @@ class _FavouritescreenState extends State<Favouritescreen> {
   }
 
 }
+

@@ -57,7 +57,7 @@ class _HomescreenState extends State<Homescreen> {
                   Scaffold.of(context).openDrawer();
                 },
                 icon: const Icon(
-                  Icons.menu,
+                  Icons.menu,color: Colors.white,
                 ),
                 iconSize: 40,
               );
@@ -95,7 +95,7 @@ class _HomescreenState extends State<Homescreen> {
                     showSearch(context: context, delegate: search());
                   },
                   icon: const Icon(
-                    Icons.search,
+                    Icons.search,color: Colors.white,
                     size: 30,
                   ))
             ],
@@ -111,26 +111,27 @@ class _HomescreenState extends State<Homescreen> {
                     borderRadius: BorderRadius.circular(50),
                     borderSide: BorderSide(width: 30, color: Colors.white12),
                     insets: EdgeInsetsDirectional.symmetric(horizontal: 9)),
-                indicatorPadding: EdgeInsets.only(bottom: 11),
-                tabs: [
+                indicatorPadding: EdgeInsets.only(bottom: 9),
+                tabs: const [
                   Tab(
-                    child: Text(
+                    child: Text( 
                       'Songs',
                       style: TextStyle(
                         fontSize: 17,
+                        color: Colors.white 
                       ),
                     ),
                   ),
                   Tab(
                     child: Text(
                       'Playlist',
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17,color: Colors.white ),
                     ),
                   ),
                   Tab(
                     child: Text(
                       'Favourites',
-                      style: TextStyle(fontSize: 17),
+                      style: TextStyle(fontSize: 17,color: Colors.white ),
                     ),
                   )
                 ]),

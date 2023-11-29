@@ -24,23 +24,22 @@ class _PlaylistscreenState extends State<Playlistscreen> {
             Wrap(
               spacing: 12,
               children: [
-                Ink(
-                  height: 160,
-                  width: 180,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    image: DecorationImage(
-                        image: AssetImage('Assets/images/earphone.webp'),
-                        fit: BoxFit.fill),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.white12,
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (contex) {
-                        return const Recentplayed();
-                      }));
-                    },
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (contex) {
+                      return const Recentplayed();
+                    }));
+                  },
+                  child: Container(
+                    height: 160,
+                    width: 180, 
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      image: DecorationImage(
+                          image: AssetImage('Assets/images/earphone.webp'),
+                          fit: BoxFit.fill),
+                    ),
                     child: Container(
                       height: 160,
                       width: double.infinity,
@@ -57,38 +56,38 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                     ),
                   ),
                 ),
-                Ink(
-                  height: 160,
-                  width: 180,
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    image: DecorationImage(
-                        image: AssetImage('Assets/images/earphone.webp'),
-                        fit: BoxFit.fill),
-                  ),
-                  child: InkWell(
-                    splashColor: Colors.white12,
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (contex) {
-                        return const Mostplayed();
-                      }));
-                    },
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context)
+                        .push(MaterialPageRoute(builder: (contex) {
+                      return const Mostplayed();
+                    }));
+                  },
+                  child: Container(
+                    height: 160,
+                    width: 180, 
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      image: DecorationImage(
+                          image: AssetImage('Assets/images/earphone.webp'),
+                          fit: BoxFit.fill),
+                    ),
                     child: Container(
-                      height: double.infinity,
+                      height: 160,
                       width: double.infinity,
                       color: Colors.black12,
                       child: const Center(
-                          child: Text(
-                        'Most Played',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 20),
-                      )),
+                        child: Text(
+                          'Most Played',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                )
               ],
             ),
             const Divider(
