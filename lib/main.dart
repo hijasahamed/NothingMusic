@@ -13,12 +13,12 @@ Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
    runApp(ChangeNotifierProvider(create: (context) => ArtWorkProvider(), 
-   child: const MyApp(),
-  )
-);
-    Hive.registerAdapter(AudioModelAdapter());
-    Hive.registerAdapter(FavAudioModelAdapter());
-    Hive.registerAdapter(PlayListModelAdapter());
+    child: const MyApp(),
+    )
+  );
+  Hive.registerAdapter(AudioModelAdapter());
+  Hive.registerAdapter(FavAudioModelAdapter());
+  Hive.registerAdapter(PlayListModelAdapter());
   await Hive.openBox<AudioModel>('songs_db');
   await Hive.openBox<FavAudioModel>('Fav_song_db');
 

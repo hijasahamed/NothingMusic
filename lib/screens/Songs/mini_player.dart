@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:nothing_music/db/model/audio_model/db_model.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MiniPlayer extends StatefulWidget {
-  const MiniPlayer({super.key,required this.songsList,});
-  final songsList;
-
+   MiniPlayer({super.key,this.songsList,this.screenSongs});
+  var songsList;
+  var screenSongs;
   @override
   State<MiniPlayer> createState() => _MiniPlayerState();
 }
@@ -36,7 +38,6 @@ class _MiniPlayerState extends State<MiniPlayer> {
       if (state.processingState == ProcessingState.completed) {
         setState(() {
           isPlaying = false; 
-
         });
       }
       }
@@ -54,13 +55,13 @@ class _MiniPlayerState extends State<MiniPlayer> {
           );
         }));
       },
-      child: Container(
-        decoration:const BoxDecoration(
-          color: Color.fromARGB(255, 35, 35, 35),
-          borderRadius: BorderRadius.all(Radius.circular(20))
-        ),
-        width: double.infinity,
-        height: 75,       
+      // child: Container(
+      //   decoration:const BoxDecoration(
+      //     color: Color.fromARGB(255, 35, 35, 35),
+      //     borderRadius: BorderRadius.all(Radius.circular(20))
+      //   ),
+      //   width: double.infinity,
+      //   height: 75,       
         child: ListTile(
           leading: QueryArtworkWidget(
               id: widget.songsList[currentindex].image, 
@@ -84,7 +85,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
             title: Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis,),
             subtitle: Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,),
             trailing: IconButton(
-              onPressed: (){
+              onPressed: (){ 
                 setState(() {
                   if(isPlaying){
                     audioPlayerAudio.pause();
@@ -101,7 +102,17 @@ class _MiniPlayerState extends State<MiniPlayer> {
               )
             )
         ),
-      ),
-    );
+      );
+    // );
   }
+
+  // whatSong()async{
+  //   final songbox =await Hive.openBox<AudioModel>('songs_db');
+  //   var check=songbox.values.toList();
+  //   for(int i=0;i<check.length;i++){
+      
+  //   }
+  // }
+
+
 }

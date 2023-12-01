@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
+import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
+import 'package:provider/provider.dart';
 
 
 addToFavDBBottomSheet(songs,context)async{
@@ -90,6 +92,7 @@ songsBottomSheet(context,songs,index,audioPlayer) {
                         songindex: index,                        
                       );
                     }));
+                    context.read<ArtWorkProvider>().setId(songs.image!);
                   },
                   leading: Icon(
                     Icons.play_circle,

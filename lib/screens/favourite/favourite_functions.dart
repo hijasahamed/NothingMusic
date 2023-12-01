@@ -43,7 +43,7 @@ getAllFavSongFromDb()async{
 
 favBottomSheeet(context,data,index,allSongsvv){ 
     showModalBottomSheet(
-      backgroundColor: Color.fromARGB(255, 35, 35, 35),
+      backgroundColor:const Color.fromARGB(255, 35, 35, 35),
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
         topLeft: Radius.circular(30),
@@ -51,28 +51,28 @@ favBottomSheeet(context,data,index,allSongsvv){
       )),
       context: context,
       builder: (BuildContext context) {
-        return Container(
+        return SizedBox(
           height: 275,
           child: Column(
             children: [
-              SizedBox(
+             const SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: EdgeInsets.only(right: 35, left: 35),
+                padding:const EdgeInsets.only(right: 35, left: 35),
                 child: Column(
                   children: [
                     Text(
                       data.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
+                      style:const TextStyle(color: Colors.white, fontSize: 20), 
                     ),
                     Text(
                       data.artist,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(color: Colors.white),
+                      style:const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),

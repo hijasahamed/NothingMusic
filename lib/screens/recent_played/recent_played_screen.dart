@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:provider/provider.dart';
 
 class Recentplayed extends StatefulWidget {
   const Recentplayed({super.key});
@@ -15,14 +12,17 @@ class Recentplayed extends StatefulWidget {
   State<Recentplayed> createState() => _RecentplayedState();
 }
 
+List allRecentSongs=[];
+
+
 class _RecentplayedState extends State<Recentplayed> {
 
-  final AudioPlayer _audioPlayer = AudioPlayer();
-
-
-  List allsongs=[];
-
-
+  @override
+  void initState() {
+   gettAllRecentSongs();
+    super.initState();
+  }
+   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,8 +63,7 @@ class _RecentplayedState extends State<Recentplayed> {
                   ),
                 );
               }
-              // recentsongslist=recentsongslist.take(30).toList(); 
-              allsongs.addAll(recentsongslist);            
+              //  recentsongslist=recentsongslist.take(30).toList();                 
               return ListView.separated(
                 itemBuilder: ((context, index) {
                   final data=recentsongslist[index];
@@ -72,7 +71,7 @@ class _RecentplayedState extends State<Recentplayed> {
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
-                          return NowPlayingScreen(songsList: allsongs, songindex: index);
+                          return NowPlayingScreen(songsList: allRecentSongs, songindex: index);
                         }));
                     },                 
                     leading: QueryArtworkWidget(
@@ -111,7 +110,7 @@ class _RecentplayedState extends State<Recentplayed> {
                     trailing: IconButton(
                         splashRadius: 25,
                         onPressed: () {
-                          recentPlayedBottomSheeet(context, data, index,_audioPlayer,allsongs);                   
+                          recentPlayedBottomSheeet(context, data, index,allRecentSongs);                   
                         },
                         icon: const Icon(
                           Icons.more_vert,

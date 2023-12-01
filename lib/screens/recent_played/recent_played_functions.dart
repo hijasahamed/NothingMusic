@@ -6,6 +6,7 @@ import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
+import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';
 import 'package:provider/provider.dart';
 
 ValueNotifier<List<AudioModel>> recentSongNotifier=ValueNotifier([]);
@@ -15,6 +16,7 @@ addToRecentPlayed(AudioModel value)async{
   final id1=await recentsongbox.add(value);
   value.id=id1;
   recentsongbox.put(id1, value);
+ 
   gettAllRecentSongs();
 }
 
@@ -31,25 +33,31 @@ removeRecentplayed(int id)async{
   gettAllRecentSongs();
 }
 
-recentPlayedAdding(song)async{
-    final recentsongbox= await Hive.openBox<AudioModel>('recent_song_db');
-    final existingSong = recentsongbox.values.firstWhere(
-    (element) => element.uri == song.uri,orElse: () {
-     return AudioModel(artist: '',image: 0,title: '',uri: '',id: 0);
+recentPlayedAdding(recentSong)async{
+  final recentsongbox= await Hive.openBox<AudioModel>('recent_song_db');
+  final existingSong = recentsongbox.values.firstWhere((element) => element.uri == recentSong.uri,orElse: () {
+      return AudioModel(artist: '',image: 0,title: '',uri: '',id: 0);
     },
   );
-  if (existingSong.uri ==song.uri ) {
+  if (existingSong.uri ==recentSong.uri ) {
     await removeRecentplayed(existingSong.id!);
-     addToRecentPlayed(song);
+     addToRecentPlayed(recentSong);
   }
   else{
-    addToRecentPlayed(song);  
+    addToRecentPlayed(recentSong);
   }
 }
 
-recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
+getAllRecentSongFromDb()async{
+  final recentsongbox= await Hive.openBox<AudioModel>('recent_song_db');
+  final List<AudioModel> recSongList=recentsongbox.values.toList();
+  allRecentSongs.clear();
+  allRecentSongs.addAll(recSongList.reversed);
+}
+
+recentPlayedBottomSheeet(context,data,index,allsongs){
   showModalBottomSheet(
-    backgroundColor: Color.fromARGB(255, 35, 35, 35),
+    backgroundColor:const  Color.fromARGB(255, 35, 35, 35),
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
       topLeft: Radius.circular(30),
@@ -57,28 +65,28 @@ recentPlayedBottomSheeet(context,data,index,_audioPlayer,allsongs){
     )),
     context: context,
     builder: (BuildContext context) {
-      return Container(
+      return SizedBox(
         height: 270 ,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
-              padding: EdgeInsets.only(right: 35, left: 35),
+              padding:const EdgeInsets.only(right: 35, left: 35),
               child: Column(
                 children: [
                   Text(
                     data.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white, fontSize: 20),
+                    style: const TextStyle(color: Colors.white, fontSize: 20),
                   ),
                   Text(
                     data.artist,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white),
+                    style:const  TextStyle(color: Colors.white),
                   ),
                 ],
               ),

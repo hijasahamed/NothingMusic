@@ -18,11 +18,14 @@ class Selectedplaylist extends StatefulWidget {
   State<Selectedplaylist> createState() => _SelectedplaylistState();
 }
 
+ List playlistSongsAddedList=[];
+ 
 class _SelectedplaylistState extends State<Selectedplaylist> {
 
   @override
   Widget build(BuildContext context) {
-     widget.allPlaylistSong=widget.allPlaylistSong.reversed.toList();
+    playlistSongsAddedList.addAll(widget.allPlaylistSong);
+    widget.allPlaylistSong=widget.allPlaylistSong.reversed.toList();
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -54,8 +57,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
           ),
         )
         :Scrollbar(         
-          child: ListView.separated(
-            
+          child: ListView.separated(           
             itemBuilder: (context, index) {             
               final data=widget.allPlaylistSong[index];              
               return ListTile(
@@ -105,12 +107,8 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                         ),
                         trailing: IconButton(
                             onPressed: () {
-                              var song=PlayListModel(artist: data.artist,image: data.image,title: data.title,uri: data.uri);
-                             
-                               playlistSongsOptions(context,song,index,widget.allPlaylistSong,widget.playlistid,widget.playlistname);
-                          
-                              
-                                                                            
+                              var song=PlayListModel(artist: data.artist,image: data.image,title: data.title,uri: data.uri);                             
+                              playlistSongsOptions(context,song,index,widget.allPlaylistSong,widget.playlistid,widget.playlistname);                                                                             
                             },
                             icon:const Icon(Icons.more_vert)
                         ),
@@ -126,7 +124,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
     );
   }
 
-   playlistSongsOptions(context,songs,index,allPlaylistSong,playlistid,playlistname)async {
+   playlistSongsOptions(context,song,index,allPlaylistSong,playlistid,playlistname)async {
     showModalBottomSheet(
         backgroundColor:const Color.fromARGB(255, 35, 35, 35),
         shape: const RoundedRectangleBorder(
@@ -148,13 +146,13 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                   child: Column(
                     children: [
                       Text(
-                        songs.title,
+                        song.title,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style:const TextStyle(color: Colors.white, fontSize: 20),
                       ),
                       Text(
-                        "${songs.artist}",
+                        "${song.artist}",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style:const TextStyle(color: Colors.white),
@@ -189,7 +187,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                 ),
                 ListTile(
                   onTap: () {
-                    addToFavDBBottomSheet(songs,context);
+                    addToFavDBBottomSheet(song,context);
                   },
                   leading:const Icon(
                     Icons.favorite_rounded,
@@ -202,7 +200,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                   onTap: () async {
                     Navigator.pop(context);                    
                     setState(() {
-                       deletePlaylistSongs(index,allPlaylistSong,playlistid,playlistname);
+                       deletePlaylistSongs(index,song,allPlaylistSong,playlistid,playlistname);
                     });                   
                     await playlistSongdeleted(context);
                   },
@@ -219,8 +217,8 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
         });
   }
 
-  Future<void>deletePlaylistSongs(index,allPlaylistSong,playlistid,playlistname) async {
-    final db = await Hive.openBox<PlayListModel >('playlist');
+  Future<void>deletePlaylistSongs(index,song,allPlaylistSong,playlistid,playlistname) async {
+    final db = await Hive.openBox<PlayListModel >('playlist_db');
     allPlaylistSong.removeAt(index);
     setState(() {
       widget.allPlaylistSong = List.from(allPlaylistSong); 

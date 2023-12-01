@@ -9,5 +9,4 @@ class ArtWorkProvider with ChangeNotifier {
     _id = id;
     notifyListeners();     
   } 
-
 }

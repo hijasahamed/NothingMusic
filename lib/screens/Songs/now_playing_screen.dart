@@ -8,7 +8,9 @@ import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/favourite/favourite_screen.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
@@ -24,8 +26,9 @@ class NowPlayingScreen extends StatefulWidget {
    NowPlayingScreen({super.key,required this.songsList,required this.songindex,});
  
 
- final List songsList;
- final int songindex;
+  List songsList;
+  int songindex;
+  
 
   @override
   State<NowPlayingScreen> createState() => _NowPlayingScreenState();
@@ -50,16 +53,32 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   
 
   Map<String, Duration> playbackPositions = {};
- 
+
+  bool isFavoriteScreenSong = false;
+
   @override
   void initState() {
-     checkmount();
-    super.initState();
-    listenToSongIndex();
     playSong();
-    listenToEvent();
+    checkmount();
+    isFavoriteScreenSong = widget.songsList == allFavSongs;
+    super.initState();    
   }
 
+  @override
+  void dispose() {
+    getAllRecentSongFromDb();
+    allSonglist.clear();
+    final currentUri = widget.songsList[currentindex].uri;
+    playbackPositions[currentUri] = position;
+    savePlaybackPosition(currentUri, position);
+    audioPlayerAudio.setShuffleModeEnabled(false);
+    audioPlayerAudio.setLoopMode(LoopMode.off); 
+    _durationSubscription.cancel();
+    _positionSubscription.cancel();
+    _playerStateSubscription.cancel(); 
+    // currentindex=0; 
+    super.dispose();
+  }
 
   playSong()async{
     if(!mounted){
@@ -85,7 +104,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         audioPlayerAudio.play();
       }
 
-      
+      listenToSongIndex();
+      listenToEvent();
       
       
     }
@@ -176,11 +196,12 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                    
               _isFavourite = isSongInDatabase(widget.songsList[currentindex].uri);
             });
-          }
+          }          
         }
       },
     );
   }
+
 
   bool isSongInDatabase(String uri) {
   final favSongBox = Hive.box<FavAudioModel>('fav_song_db');
@@ -196,21 +217,6 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   Future<void> savePlaybackPosition(String uri, Duration position) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setInt('playback_position_$uri', position.inSeconds);
-  }
-
-  @override
-  void dispose() {
-    allSonglist.clear();
-    final currentUri = widget.songsList[currentindex].uri;
-    playbackPositions[currentUri] = position;
-    savePlaybackPosition(currentUri, position);
-    audioPlayerAudio.setShuffleModeEnabled(false);
-    audioPlayerAudio.setLoopMode(LoopMode.off); 
-    _durationSubscription.cancel();
-    _positionSubscription.cancel();
-    _playerStateSubscription.cancel();
-  
-    super.dispose();
   }
 
   @override
@@ -282,15 +288,15 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                     uri: widget.songsList[currentindex].uri,                                    
                                     ), context);
                                 }, 
-                                icon: Icon(Icons.playlist_add ,color: Colors.white,),                            
+                                icon:const Icon(Icons.playlist_add ,color: Colors.white,),                            
                               ),
                             ),
+                            if(!isFavoriteScreenSong)
                             CircleAvatar(
                               backgroundColor: Colors.white24,
                               child: IconButton(
                                 onPressed: (){                                 
-                                  addToFavDbNowPlaying(widget.songsList[currentindex],context);
-                                                                 
+                                  addToFavDbNowPlaying(widget.songsList[currentindex],context);                                                                
                                 }, 
                                 icon: Icon(Icons.favorite,color: _isFavourite ? Colors.red : Colors.white),                            
                               ),
@@ -298,7 +304,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 25), 
+                      const SizedBox(height: 25), 
                       Wrap(
                         spacing: 30 ,
                         children: [
@@ -314,7 +320,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                                 shuffleOffSnackbar(context);
                               }                           
                             }, 
-                            icon: isshuffle==true? Icon(Icons.shuffle,color: Colors.blue,) :Icon(Icons.shuffle),
+                            icon: isshuffle==true?const Icon(Icons.shuffle,color: Colors.blue,) :const Icon(Icons.shuffle),
                           ),
                           IconButton(
                             onPressed: (){
@@ -380,25 +386,30 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
 
   addToFavDbNowPlaying(song,context)async{
-    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');    
+    int? id;
+    final favsongbox = await Hive.openBox<FavAudioModel>('fav_song_db');
+
+    var a=favsongbox.values.toList();
+    for(int i=0;i<a.length;i++){
+      if(song.uri==a[i].uri){
+         id=a[i].id;
+      }
+    }
     if(!favsongbox.values.any((element) => element.uri == song.uri)){
-      final _favSong=FavAudioModel(image: song.image!, title: song.title, artist: song.artist, uri: song.uri,); 
-      addToFav(_favSong);
+      final favSong=FavAudioModel(image: song.image!, title: song.title, artist: song.artist, uri: song.uri,); 
+      addToFav(favSong);
       setState(() {
         _isFavourite=true;
       });
       favAddedSnackbar(context);
     }
-    // else if(favsongbox.values.any((element) => element.uri == song.uri)){
-    //   removeFavSong(song.id);
-    //   setState(() {
-    //     _isFavourite=false;
-    //   });
-    //   favRemovedsnackbar(context);
-    // }
-    else{
-      favAlreadyAddedSnackbar(context);
-    }     
+    else if(favsongbox.values.any((element) => element.uri == song.uri)){
+      removeFavSong(id!);
+      setState(() {
+        _isFavourite=false;
+      });
+      favRemovedsnackbar(context);
+    }    
   }
 }
 

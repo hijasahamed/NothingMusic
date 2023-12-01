@@ -27,7 +27,6 @@ class _WelcomescreenState extends State<Welcomescreen> {
      final PermissionStatus status= await Permission.audio.request();
      final PermissionStatus status1= await Permission.storage.request();
      if(status.isGranted || status1.isGranted){
-      onAudioQuery=OnAudioQuery();
       await fetchSong();
      }
      if(status.isDenied){ 

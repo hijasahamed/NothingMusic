@@ -7,6 +7,7 @@ import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Drawer/about_screen.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/Songs/mini_player.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
@@ -24,8 +25,9 @@ class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
   @override
-  State<Homescreen> createState() => _HomescreenState();
-}
+  State<Homescreen> createState() => _HomescreenState(); 
+} 
+
 
 class _HomescreenState extends State<Homescreen> {
   @override
@@ -38,6 +40,7 @@ class _HomescreenState extends State<Homescreen> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -45,7 +48,7 @@ class _HomescreenState extends State<Homescreen> {
         child: Scaffold(
           backgroundColor: Colors.black,
           appBar: AppBar(
-            backgroundColor: Color.fromARGB(255, 35, 35, 35),
+            backgroundColor:const Color.fromARGB(255, 35, 35, 35),
             shadowColor: Colors.transparent,
             shape: const RoundedRectangleBorder(
                 borderRadius:
@@ -76,9 +79,9 @@ class _HomescreenState extends State<Homescreen> {
                     fontWeight: FontWeight.w900,
                   ),
                 ),
-                Transform.translate(
-                  offset: Offset(0, -8),
-                  child: Text(
+                 Transform.translate(
+                  offset: const Offset(0, -8),
+                  child:const Text(
                     'Music',
                     style: TextStyle(
                         color: Colors.white,
@@ -92,7 +95,7 @@ class _HomescreenState extends State<Homescreen> {
               IconButton(
                   splashRadius: 27,
                   onPressed: () {
-                    showSearch(context: context, delegate: search());
+                    showSearch(context: context, delegate: Search()); 
                   },
                   icon: const Icon(
                     Icons.search,color: Colors.white,
@@ -100,6 +103,8 @@ class _HomescreenState extends State<Homescreen> {
                   ))
             ],
             bottom: TabBar(
+              dividerColor: Colors.transparent,
+              tabAlignment: TabAlignment.fill,
                 splashFactory: NoSplash.splashFactory,
                 overlayColor: MaterialStateProperty.resolveWith<Color>(
                   (Set<MaterialState> states) {
@@ -109,9 +114,9 @@ class _HomescreenState extends State<Homescreen> {
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicator: UnderlineTabIndicator(
                     borderRadius: BorderRadius.circular(50),
-                    borderSide: BorderSide(width: 30, color: Colors.white12),
-                    insets: EdgeInsetsDirectional.symmetric(horizontal: 9)),
-                indicatorPadding: EdgeInsets.only(bottom: 9),
+                    borderSide:const BorderSide(width: 30, color: Colors.white12),
+                    insets:const EdgeInsetsDirectional.symmetric(horizontal: 9)),
+                indicatorPadding:const EdgeInsets.only(bottom: 9),
                 tabs: const [
                   Tab(
                     child: Text( 
@@ -142,7 +147,7 @@ class _HomescreenState extends State<Homescreen> {
             elevation: 10,
             width: 280,
             child: SafeArea(
-              child: Container(
+              child: SizedBox(
                 height: double.infinity,
                 width: double.infinity,
                 child: Padding(
@@ -153,7 +158,7 @@ class _HomescreenState extends State<Homescreen> {
                       Flexible(flex: 2, child: ElevatedCircularAvatar()),
                       Flexible(
                           flex: 6,
-                          child: Container(
+                          child:  SizedBox(
                             child: Column(
                               children: [
                                 Ink(
@@ -163,10 +168,10 @@ class _HomescreenState extends State<Homescreen> {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (contex) {
-                                        return About();
+                                        return const About();
                                       }));
                                     },
-                                    child: Row(
+                                    child:const Row(
                                       children: [
                                         Icon(
                                           Icons.info_outline,
@@ -191,10 +196,10 @@ class _HomescreenState extends State<Homescreen> {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (contex) {
-                                        return Termsandconditions();
+                                        return const Termsandconditions();
                                       }));
                                     },
-                                    child: Row(
+                                    child:const Row(
                                       children: [
                                         Icon(
                                           Icons.receipt_rounded,
@@ -219,7 +224,7 @@ class _HomescreenState extends State<Homescreen> {
                                     onTap: () {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(builder: (contex) {
-                                        return Privacyandpolicy();
+                                        return const Privacyandpolicy();
                                       }));
                                     },
                                     child: const Row(
@@ -259,21 +264,32 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
           ),
+
           body: const SafeArea(
             child: TabBarView(children: [
-              // First tab
               Songsscreen(),
-              // Second tab
               Playlistscreen(),
-              // Third tab
               Favouritescreen(),
             ]),
+          ),
+
+          bottomNavigationBar: Visibility(
+            visible: started,
+            child: BottomAppBar(
+              height: 80,
+              padding: EdgeInsets.only(bottom: 0,top: 3),
+              color: const Color.fromARGB(255, 35, 35, 35),
+              shape: const CircularNotchedRectangle(),
+              child: MiniPlayer(songsList: allSongs), 
+            ),
           ),
         ));
   }
 }
 
-class search extends SearchDelegate {
+
+
+class Search extends SearchDelegate {
   List data = [];
 
   final AudioPlayer _audioPlayer = AudioPlayer();
@@ -332,7 +348,7 @@ class search extends SearchDelegate {
                 child: Column(
                 children: [
                   LottieBuilder.asset('Assets/Animations/no searched song animation.json',height: 150,width: 150,), 
-                  Text('Sorry Searched Song Not Found',style: TextStyle(fontWeight: FontWeight.w500),),
+                 const Text('Sorry Searched Song Not Found',style: TextStyle(fontWeight: FontWeight.w500),),
                 ],
               ),);  
             }
@@ -382,14 +398,14 @@ class search extends SearchDelegate {
                   );
                 } 
                 else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               },
               itemCount: filteredSongs.length,
             );
           } 
           else {
-            return SizedBox();
+            return const SizedBox();
           }
         });
   }
@@ -411,7 +427,7 @@ class search extends SearchDelegate {
                 child: Column(
                 children: [
                   LottieBuilder.asset('Assets/Animations/no searched song animation.json',height: 150,width: 150,), 
-                  Text('Sorry Searched Song Not Found',style: TextStyle(fontWeight: FontWeight.w500),),
+                 const Text('Sorry Searched Song Not Found',style: TextStyle(fontWeight: FontWeight.w500),),
                 ],
               ),); 
             }    
@@ -465,7 +481,7 @@ class search extends SearchDelegate {
               itemCount: filteredSongs.length,
             );
           }
-          return SizedBox();
+          return const SizedBox();
         });
   }
 }

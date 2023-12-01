@@ -35,7 +35,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                     ),
                   ),
               );
-            }
+          }
           return GridView.builder( 
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
