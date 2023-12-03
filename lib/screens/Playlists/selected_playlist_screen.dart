@@ -5,11 +5,12 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Selectedplaylist extends StatefulWidget {
-  Selectedplaylist({super.key,required this.allPlaylistSong,required this.playlistname,required this.playlistid}); 
-  
+  Selectedplaylist({super.key,required this.onSongPlayed,required this.allPlaylistSong,required this.playlistname,required this.playlistid}); 
+  final Function(bool) onSongPlayed;
   List allPlaylistSong;
   final playlistid; 
   final String? playlistname;
@@ -61,7 +62,8 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
             itemBuilder: (context, index) {             
               final data=widget.allPlaylistSong[index];              
               return ListTile(
-                        onTap: () {                        
+                        onTap: () { 
+                          widget.onSongPlayed(true);                       
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
                             return NowPlayingScreen(                              
@@ -69,6 +71,7 @@ class _SelectedplaylistState extends State<Selectedplaylist> {
                               songindex: index,                              
                             );
                           }));
+                          started=true;
                         },
                         leading: QueryArtworkWidget(
                           id: data.image!,

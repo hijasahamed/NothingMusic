@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/provider/art_work_provider.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:provider/provider.dart';
 
 class Mostplayed extends StatefulWidget {
-  const Mostplayed({super.key});
+  final Function(bool) onSongPlayed;
+  const Mostplayed({super.key,required this.onSongPlayed});
 
   @override
   State<Mostplayed> createState() => _MostplayedState();
@@ -70,10 +69,12 @@ class _MostplayedState extends State<Mostplayed> {
                   final data=mostPlayedsongslist[index];
                   return ListTile(
                     onTap: () {
+                      widget.onSongPlayed(true); 
                       Navigator.of(context).push(
                         MaterialPageRoute(builder: (context){
                           return NowPlayingScreen(songsList: allsongs, songindex: index);
                         }));
+                        started=true;
                     },                 
                     leading: QueryArtworkWidget(
                       id: data.image!,

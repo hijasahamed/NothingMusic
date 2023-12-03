@@ -8,7 +8,7 @@ import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
-import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
+import 'package:nothing_music/screens/Songs/mini_player.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_screen.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
@@ -19,7 +19,6 @@ import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 
 class NowPlayingScreen extends StatefulWidget {
@@ -57,7 +56,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool isFavoriteScreenSong = false;
 
   @override
-  void initState() {
+  void initState() {      
     playSong();
     checkmount();
     isFavoriteScreenSong = widget.songsList == allFavSongs;
@@ -191,7 +190,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
                 uri: widget.songsList[currentindex].uri); 
 
                 recentPlayedAdding(recentsong);
-              
+                miniPlayerData(recentsong,widget.songsList);
                 checkAndAddToMostplayed(recentsong,widget.songsList[currentindex].uri,widget.songsList[currentindex]);
                                    
               _isFavourite = isSongInDatabase(widget.songsList[currentindex].uri);

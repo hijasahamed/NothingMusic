@@ -3,11 +3,14 @@ import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
 import 'package:nothing_music/screens/Songs/mini_player.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Favouritescreen extends StatefulWidget {
-  const Favouritescreen({super.key});
+  const Favouritescreen({super.key,required this.onSongPlayed});
+  
+  final Function(bool) onSongPlayed;
 
   @override
   State<Favouritescreen> createState() => _FavouritescreenState();
@@ -57,12 +60,14 @@ class _FavouritescreenState extends State<Favouritescreen> {
                 return ListTile(
                   splashColor: Colors.transparent,
                   onTap: (){
+                    widget.onSongPlayed(true);
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (context){
                         return NowPlayingScreen(songsList: allFavSongs, songindex: index);
                       })
                     ); 
-                    MiniPlayer(screenSongs: allFavSongs,);                                               
+                    started=true;
+                    miniPlayerData(data,favouriteSongs);                                             
                   },
                   leading: QueryArtworkWidget(
                     id: data.image!,

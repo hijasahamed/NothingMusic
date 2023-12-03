@@ -9,28 +9,28 @@ class Privacyandpolicy extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Privacy Policy'),
+        title:const Text('Privacy Policy',style: TextStyle(fontWeight: FontWeight.w700),),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Container(
-              child: const Column(
+            padding: EdgeInsets.all(10),
+            child: SizedBox(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Privacy Policy',style: TextStyle(color: Colors.red,fontSize: 25),),
+                  Text('Privacy Policy',style: TextStyle(color: Colors.red,fontSize: 25,fontWeight: FontWeight.w700),),
+                  Text('NOTHING MUSIC APP',style: TextStyle(fontFamily: 'nothingfonts',fontSize: 15),), 
                   Text(
-                    """
-          
-Last updated: January 02, 2023
+                    """          
+Last updated: December 04, 2023
 
 This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the Free Privacy Policy Generator.
-Interpretation and Definitions
 
-Interpretation
+Interpretation and Definitions:
+Interpretation-
 The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.
-Definitions
-
+Definitions-
 For the purposes of this Privacy Policy:
 Account means a unique account created for You to access our Service or parts of our Service.
 Affiliate means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.
@@ -109,8 +109,8 @@ We will let You know via email and/or a prominent notice on Our Service, prior t
 You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.
 Contact Us
 If you have any questions about this Privacy Policy, You can contact us:
-By email: nasinasief@gmail.com                 
-          """,style: TextStyle(color: Colors.white,fontSize: 17),
+By email: hijasahamed2000@gmail.com                
+          """,style: TextStyle(color: Colors.white,fontSize: 15),
                   ),
                 ],
               ),

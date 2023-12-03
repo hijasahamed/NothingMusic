@@ -5,7 +5,8 @@ import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';
 
 class Playlistscreen extends StatefulWidget {
-  const Playlistscreen({super.key});
+   final Function(bool) onSongPlayed;
+  const Playlistscreen({super.key,required this.onSongPlayed});
 
   @override
   State<Playlistscreen> createState() => _PlaylistscreenState();
@@ -60,7 +61,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                   onTap: () {
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (contex) {
-                      return const Mostplayed();
+                      return  Mostplayed(onSongPlayed: widget.onSongPlayed,);
                     }));
                   },
                   child: Container(
@@ -95,7 +96,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
               thickness: 2,
               height: 25,
             ),
-            Expanded(flex: 8, child: PlaylistCreatedScreen()),
+            Expanded(flex: 8, child: PlaylistCreatedScreen(onSongPlayed: widget.onSongPlayed,)),
             Expanded(
               flex: 2,
               child: SizedBox(

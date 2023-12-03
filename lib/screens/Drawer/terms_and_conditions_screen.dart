@@ -9,30 +9,31 @@ class Termsandconditions extends StatelessWidget {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: Text('Terms and Conditions'),
+        title:const Text('Terms and Conditions',style: TextStyle(fontWeight: FontWeight.w700),),
       ),
-      body: SafeArea(
-        child: Container(
+      body: const SafeArea(
+        child: SizedBox(
           height: double.infinity,
           width: double.infinity,
-          child:const SingleChildScrollView(
+          child:SingleChildScrollView(
             child:  Padding(
               padding: EdgeInsets.all(10 ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Last updated: 13-10-2023',style: TextStyle(color: Colors.red,fontSize: 25),),
+                  Text('NOTHING MUSIC',style: TextStyle(fontFamily: 'nothingfonts',fontSize: 15),),
+                  Text('Last updated:4/12/2023',style: TextStyle(color: Colors.red,fontSize: 20,fontWeight: FontWeight.w700),),
                   Text("""
-                        
-1.Introduction\n                    
+                  
 Welcome to  Nothing Music ,\n
 These Terms of Service govern your use of our website located at lala.com (together or individually “Service”) operated by  M_App music .\n
 Our Privacy Policy also governs your use of our Service and explains how we collect, safeguard and disclose information that results from your use of our web pages.
                         
 Your agreement with us includes these Terms and our Privacy Policy (“Agreements”). You acknowledge that you have read and understood Agreements, and agree to be bound of them.\n 
-If you do not agree with (or cannot comply with) Agreements, then you may not use the Service, but please let us know by emailing at nasinasief@gmail.com so we can try to find a solution. These Terms apply to all visitors, users and others who wish to access or use Service.
+If you do not agree with (or cannot comply with) Agreements, then you may not use the Service, but please let us know by emailing at hijasahamed2000@gmail.com so we can try to find a solution. These Terms apply to all visitors, users and others who wish to access or use Service.
                         
 2. Communications\n 
-By using our Service, you agree to subscribe to newsletters, marketing or promotional materials and other information we may send. However, you may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or by emailing at nasinasief@gmail.com.
+By using our Service, you agree to subscribe to newsletters, marketing or promotional materials and other information we may send. However, you may opt out of receiving any, or all, of these communications from us by following the unsubscribe link or by emailing at hijasahamed2000@gmail.com.
                         
 3. Contests, Sweepstakes and Promotions\n
 Any contests, sweepstakes or other promotions (collectively, “Promotions”) made available through Service may be governed by rules that are separate from these Terms of Service. If you participate in any Promotions, please review the applicable rules as well as our Privacy Policy. If the rules for a Promotion conflict with these Terms of Service, Promotion rules will apply.
@@ -70,7 +71,7 @@ Service and its original content (excluding Content provided by users), features
                         
 9. Copyright Policy\n
 We respect the intellectual property rights of others. It is our policy to respond to any claim that Content posted on Service infringes on the copyright or other intellectual property rights (“Infringement”) of any person or entity.
-If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to nasinasief@gmail.com, with the subject line: “Copyright Infringement” and include in your claim a detailed description of the alleged Infringement as detailed below, under “DMCA Notice and Procedure for Copyright Infringement Claims”
+If you are a copyright owner, or authorized on behalf of one, and you believe that the copyrighted work has been copied in a way that constitutes copyright infringement, please submit your claim via email to hijasahamed2000@gmail.com, with the subject line: “Copyright Infringement” and include in your claim a detailed description of the alleged Infringement as detailed below, under “DMCA Notice and Procedure for Copyright Infringement Claims”
 You may be held accountable for damages (including costs and attorneys’ fees) for misrepresentation or bad-faith claims on the infringement of any Content found on and/or through Service on your copyright.
                         
 10. DMCA Notice and Procedure for Copyright Infringement Claims\n
@@ -81,10 +82,10 @@ You may submit a notification pursuant to the Digital Millennium Copyright Act (
 0.4. your address, telephone number, and email address;
 0.5. a statement by you that you have a good faith belief that the disputed use is not authorized by the copyright owner, its agent, or the law;
 0.6. a statement by you, made under penalty of perjury, that the above information in your notice is accurate and that you are the copyright owner or authorized to act on the copyright owner’s behalf.
-You can contact our Copyright Agent via email at nasinasief@gmail.com.
+You can contact our Copyright Agent via email at hijasahamed2000@gmail.com.
                         
 11. Error Reporting and Feedback\n
-You may provide us either directly at nasinasief@gmail.com or via third party sites and tools with information and feedback concerning errors, suggestions for improvements, ideas, problems, complaints, and other matters related to our Service (“Feedback”). You acknowledge and agree that: (i) you shall not retain, acquire or assert any intellectual property right or other right, title or interest in or to the Feedback; (ii) Company may have development ideas similar to the Feedback; (iii) Feedback does not contain confidential information or proprietary information from you or any third party; and (iv) Company is not under any obligation of confidentiality with respect to the Feedback. In the event the transfer of the ownership to the Feedback is not possible due to applicable mandatory laws, you grant Company and its affiliates an exclusive, transferable, irrevocable, free-of-charge, sub-licensable, unlimited and perpetual right to use (including copy, modify, create derivative works, publish, distribute and commercialize) Feedback in any manner and for any purpose.
+You may provide us either directly at hijasahamed2000@gmail.com or via third party sites and tools with information and feedback concerning errors, suggestions for improvements, ideas, problems, complaints, and other matters related to our Service (“Feedback”). You acknowledge and agree that: (i) you shall not retain, acquire or assert any intellectual property right or other right, title or interest in or to the Feedback; (ii) Company may have development ideas similar to the Feedback; (iii) Feedback does not contain confidential information or proprietary information from you or any third party; and (iv) Company is not under any obligation of confidentiality with respect to the Feedback. In the event the transfer of the ownership to the Feedback is not possible due to applicable mandatory laws, you grant Company and its affiliates an exclusive, transferable, irrevocable, free-of-charge, sub-licensable, unlimited and perpetual right to use (including copy, modify, create derivative works, publish, distribute and commercialize) Feedback in any manner and for any purpose.
                         
 12. Links To Other Web Sites\n
 Our Service may contain links to third party web sites or services that are not owned or controlled by  M_App music .
@@ -129,7 +130,7 @@ BY USING SERVICE OR OTHER SERVICES PROVIDED BY US, YOU ACKNOWLEDGE THAT YOU HAVE
 21. Contact Us\n
 Please send your feedback, comments, requests for technical support by email: hijasahamed@gmail.com.
                         
-                        """,style: TextStyle(color: Colors.white,fontSize: 17),),
+                        """,style: TextStyle(color: Colors.white,fontSize: 15),),
                 ],
               ),
             ),

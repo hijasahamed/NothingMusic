@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/audio_model/db_model.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class MiniPlayer extends StatefulWidget {
-   MiniPlayer({super.key,this.songsList,this.screenSongs});
-  var songsList;
-  var screenSongs;
+  MiniPlayer({super.key,});
+  
   @override
   State<MiniPlayer> createState() => _MiniPlayerState();
 }
-
+var allSongs;
+var singingSong;
 class _MiniPlayerState extends State<MiniPlayer> {
 
   @override
@@ -54,17 +55,10 @@ class _MiniPlayerState extends State<MiniPlayer> {
             songindex: currentindex,
           );
         }));
-      },
-      // child: Container(
-      //   decoration:const BoxDecoration(
-      //     color: Color.fromARGB(255, 35, 35, 35),
-      //     borderRadius: BorderRadius.all(Radius.circular(20))
-      //   ),
-      //   width: double.infinity,
-      //   height: 75,       
+      },     
         child: ListTile(
           leading: QueryArtworkWidget(
-              id: widget.songsList[currentindex].image, 
+              id: singingSong.image, 
               type: ArtworkType.AUDIO,
               artworkHeight: 60,
               artworkWidth: 60,
@@ -82,9 +76,9 @@ class _MiniPlayerState extends State<MiniPlayer> {
                         fit: BoxFit.fill)),
               ),
             ),
-            title: Text(widget.songsList[currentindex].title,maxLines: 1,overflow: TextOverflow.ellipsis,),
-            subtitle: Text(widget.songsList[currentindex].artist,maxLines: 1,overflow: TextOverflow.ellipsis,),
-            trailing: IconButton(
+            title: Text(singingSong.title,maxLines: 1,overflow: TextOverflow.ellipsis,),
+            subtitle: Text(singingSong.artist,maxLines: 1,overflow: TextOverflow.ellipsis,),
+            trailing: IconButton( 
               onPressed: (){ 
                 setState(() {
                   if(isPlaying){
@@ -103,16 +97,11 @@ class _MiniPlayerState extends State<MiniPlayer> {
             )
         ),
       );
-    // );
   }
 
-  // whatSong()async{
-  //   final songbox =await Hive.openBox<AudioModel>('songs_db');
-  //   var check=songbox.values.toList();
-  //   for(int i=0;i<check.length;i++){
-      
-  //   }
-  // }
-
-
 }
+
+  miniPlayerData(song,songslist){
+    singingSong=song;
+    allSongs=songslist;
+  }

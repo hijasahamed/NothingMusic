@@ -21,17 +21,20 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
 import '../Intros/splash_screen.dart';
 
+
+
 class Homescreen extends StatefulWidget {
-  const Homescreen({super.key});
+   Homescreen({super.key,});
+    
 
   @override
   State<Homescreen> createState() => _HomescreenState(); 
 } 
 
-
 class _HomescreenState extends State<Homescreen> {
   @override
   void initState() {
+   
     getAllSongs();
     getAllFavSong();
     gettAllRecentSongs();
@@ -39,10 +42,10 @@ class _HomescreenState extends State<Homescreen> {
     getAllPlaylist();
     super.initState();
   }
-
-
+ 
   @override
   Widget build(BuildContext context) {
+   
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -57,6 +60,7 @@ class _HomescreenState extends State<Homescreen> {
               return IconButton(
                 splashRadius: 27,
                 onPressed: () {
+                  
                   Scaffold.of(context).openDrawer();
                 },
                 icon: const Icon(
@@ -118,7 +122,7 @@ class _HomescreenState extends State<Homescreen> {
                     insets:const EdgeInsetsDirectional.symmetric(horizontal: 9)),
                 indicatorPadding:const EdgeInsets.only(bottom: 9),
                 tabs: const [
-                  Tab(
+                  Tab( 
                     child: Text( 
                       'Songs',
                       style: TextStyle(
@@ -143,9 +147,8 @@ class _HomescreenState extends State<Homescreen> {
           ),
           drawer: Drawer(
             shape: const Border(right: BorderSide(color: Colors.white12)),
-            backgroundColor: Colors.black,
-            elevation: 10,
-            width: 280,
+            backgroundColor: const Color.fromARGB(255, 0, 0, 0),            
+            width: 271,
             child: SafeArea(
               child: SizedBox(
                 height: double.infinity,
@@ -155,12 +158,19 @@ class _HomescreenState extends State<Homescreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(flex: 2, child: ElevatedCircularAvatar()),
+                      Flexible(flex: 4 , child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedCircularAvatar(),
+                          const Text('NOTHING MUSIC',style: TextStyle(fontWeight: FontWeight.w800,fontSize: 20,fontFamily: 'nothingfonts',color: Colors.grey),)
+                        ],
+                      )),
                       Flexible(
-                          flex: 6,
+                          flex: 9,
                           child:  SizedBox(
                             child: Column(
                               children: [
+                                const SizedBox(height: 20,),
                                 Ink(
                                   height: 60,
                                   width: 300,
@@ -253,7 +263,7 @@ class _HomescreenState extends State<Homescreen> {
                           child: Align(
                             alignment: Alignment.bottomCenter,
                             child: Text(
-                              'Version 1.0',
+                              'Version 1.0.0',
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.w500),
                             ),
@@ -264,29 +274,48 @@ class _HomescreenState extends State<Homescreen> {
               ),
             ),
           ),
-
-          body: const SafeArea(
+            
+          body:  SafeArea(
             child: TabBarView(children: [
-              Songsscreen(),
-              Playlistscreen(),
-              Favouritescreen(),
+              Songsscreen(
+                onSongPlayed: (bool isSongPlayed){
+                  if(isSongPlayed){
+                    setState(() {});
+                  }
+                },
+              ),
+              Playlistscreen(
+                onSongPlayed: (bool isSongPlayed){
+                  if(isSongPlayed){
+                    setState(() {});
+                  }
+                },
+              ),
+              Favouritescreen(
+                onSongPlayed: (bool isSongPlayed){
+                  if(isSongPlayed){
+                    setState(() {});
+                  }
+                },
+              ),
             ]),
           ),
-
-          bottomNavigationBar: Visibility(
-            visible: started,
-            child: BottomAppBar(
-              height: 80,
-              padding: EdgeInsets.only(bottom: 0,top: 3),
-              color: const Color.fromARGB(255, 35, 35, 35),
-              shape: const CircularNotchedRectangle(),
-              child: MiniPlayer(songsList: allSongs), 
+    
+          bottomNavigationBar:Visibility(           
+            visible: started,            
+            child: Container( 
+              padding:const EdgeInsets.only(top: 2),
+              height: 75,             
+              decoration:const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(35)),
+                color:Color.fromARGB(255, 52, 50, 50),
+              ),
+              child: MiniPlayer(),
             ),
-          ),
+          )
         ));
   }
 }
-
 
 
 class Search extends SearchDelegate {
@@ -361,11 +390,13 @@ class Search extends SearchDelegate {
                     children: [
                       ListTile(
                         onTap: () {
-                          context.read<ArtWorkProvider>().setId(data.image!);
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {                           
-                            return NowPlayingScreen(songsList: filteredSongs, songindex: index);
-                          }));
+                          context.read<ArtWorkProvider>().setId(data.image!);                         
+                          Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (ctx) => NowPlayingScreen(
+                             songindex: index,
+                             songsList: filteredSongs, 
+                            ),
+                          ));
                         },
                         title: Text(
                           data.title,
@@ -443,10 +474,12 @@ class Search extends SearchDelegate {
                       ListTile(
                         onTap: () {
                           context.read<ArtWorkProvider>().setId(data.image!);
-                            Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return NowPlayingScreen(songsList: filteredSongs, songindex: index);
-                          }));
+                            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (ctx) => NowPlayingScreen(
+                             songindex: index,
+                             songsList: filteredSongs, 
+                            ),
+                          ));
                         },
                         title: Text(data.title,maxLines: 1,overflow: TextOverflow.ellipsis,),
                         leading: QueryArtworkWidget(

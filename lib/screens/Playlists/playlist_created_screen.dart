@@ -4,7 +4,8 @@ import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
 
 class PlaylistCreatedScreen extends StatefulWidget {
-  const PlaylistCreatedScreen({super.key});
+  final Function(bool) onSongPlayed;
+  const PlaylistCreatedScreen({super.key,required this.onSongPlayed});
 
   @override
   State<PlaylistCreatedScreen> createState() => _PlaylistCreatedScreenState();
@@ -52,6 +53,7 @@ class _PlaylistCreatedScreenState extends State<PlaylistCreatedScreen> {
                 Navigator.of(context).push(MaterialPageRoute(
                   builder: (contex){ 
                     return Selectedplaylist( 
+                      onSongPlayed: widget.onSongPlayed,
                       allPlaylistSong: data.songsList!,
                       playlistid: data.id,
                       playlistname: data.name,

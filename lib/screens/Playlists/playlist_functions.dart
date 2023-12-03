@@ -5,6 +5,7 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
   ValueNotifier<List<PlayListModel>> playlistNameNotifier=ValueNotifier([]);
   final GlobalKey<FormState> formkey = GlobalKey<FormState>();
   final playListNameController = TextEditingController();
+  var playlistNames=[];
 
 
 
@@ -37,6 +38,7 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 
 
   createPlaylist(context,playListNameController){
+    checkPlaylistName();
     showDialog(
       context: context, 
       builder: (ctx){
@@ -49,6 +51,9 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
               validator: (value){
                 if(value==null ||value.isEmpty){
                   return 'Enter Playlist Name';
+                }
+                else if(playlistNames.contains(value)){
+                  return 'Duplicate name';
                 }
               },
               decoration: const InputDecoration(
@@ -86,6 +91,14 @@ import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
         );
       }
     );
+  }
+
+  checkPlaylistName()async{
+    final playlistNameBox=await Hive.openBox<PlayListModel>('playlist_db');
+    playlistNames.clear();
+    for(var name in playlistNameBox.values){
+      playlistNames.add(name.name!);
+    }
   }
 
   deleteThePlaylist(id,context,name)async{
