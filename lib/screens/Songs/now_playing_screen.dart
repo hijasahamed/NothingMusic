@@ -220,7 +220,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (currentindex < 0 || currentindex >= widget.songsList.length) {
+    if (currentindex < 0 || currentindex >= widget.songsList.length) { 
     return Placeholder();
     }
     return  Scaffold(
