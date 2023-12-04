@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
@@ -25,8 +24,8 @@ class NowPlayingScreen extends StatefulWidget {
    NowPlayingScreen({super.key,required this.songsList,required this.songindex,});
  
 
-  List songsList;
-  int songindex;
+  final List songsList;
+  final int songindex;
   
 
   @override
@@ -56,7 +55,8 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
   bool isFavoriteScreenSong = false;
 
   @override
-  void initState() {      
+  void initState() { 
+    listenToSongIndex();     
     playSong();
     checkmount();
     isFavoriteScreenSong = widget.songsList == allFavSongs;
@@ -103,7 +103,7 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
         audioPlayerAudio.play();
       }
 
-      listenToSongIndex();
+      
       listenToEvent();
       
       
@@ -220,6 +220,9 @@ class _NowPlayingScreenState extends State<NowPlayingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (currentindex < 0 || currentindex >= widget.songsList.length) {
+    return Placeholder();
+    }
     return  Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
