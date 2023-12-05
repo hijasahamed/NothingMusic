@@ -117,7 +117,7 @@ class _PlaylistscreenState extends State<Playlistscreen> {
                       child: const Icon(
                         Icons.playlist_add,
                         color: Colors.white,
-                        size: 30,
+                        size: 35,
                       ),
                     ),
                   ),
