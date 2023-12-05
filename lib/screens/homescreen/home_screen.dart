@@ -6,16 +6,16 @@ import 'package:nothing_music/db/function/db_function.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
 import 'package:nothing_music/screens/Drawer/about_screen.dart';
-import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
-import 'package:nothing_music/screens/Songs/mini_player.dart';
+import 'package:nothing_music/screens/playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/songs/mini_player.dart';
 import 'package:nothing_music/screens/most_played/most_played_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
-import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:nothing_music/screens/favourite/favourite_screen.dart';
-import 'package:nothing_music/screens/Playlists/playlist_screen.dart';
+import 'package:nothing_music/screens/playlists/playlist_screen.dart';
 import 'package:nothing_music/screens/Drawer/privacy_policy_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/songs/songs_screen.dart';
 import 'package:nothing_music/screens/Drawer/terms_and_conditions_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:provider/provider.dart';
@@ -158,7 +158,7 @@ class _HomescreenState extends State<Homescreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Flexible(flex: 4 , child: Column(
+                      Flexible(flex:5 , child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedCircularAvatar(),

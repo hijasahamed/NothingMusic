@@ -3,7 +3,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
 import 'package:nothing_music/provider/art_work_provider.dart';
-import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';

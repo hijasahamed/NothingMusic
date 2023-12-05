@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Audio_model/db_model.dart';
-import 'package:nothing_music/screens/Songs/mini_player.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/songs/mini_player.dart';
+import 'package:nothing_music/screens/songs/songs_screen.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_functions.dart';
-import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/songs/now_playing_screen.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class Recentplayed extends StatefulWidget {

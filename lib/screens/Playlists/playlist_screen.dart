@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nothing_music/screens/most_played/most_played_screen.dart';
-import 'package:nothing_music/screens/Playlists/playlist_created_screen.dart';
-import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/playlists/playlist_created_screen.dart';
+import 'package:nothing_music/screens/playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/recent_played/recent_played_screen.dart';
 
 class Playlistscreen extends StatefulWidget {

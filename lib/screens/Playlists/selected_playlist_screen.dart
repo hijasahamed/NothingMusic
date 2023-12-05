@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
-import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/playlists/playlist_functions.dart';
 import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
 import 'package:nothing_music/screens/Songs/songs_functions.dart';
 import 'package:nothing_music/screens/Songs/songs_screen.dart';

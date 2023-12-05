@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nothing_music/db/model/Favourite_model/fav_db_model.dart';
-import 'package:nothing_music/screens/Songs/mini_player.dart';
-import 'package:nothing_music/screens/Songs/now_playing_screen.dart';
-import 'package:nothing_music/screens/Songs/songs_screen.dart';
+import 'package:nothing_music/screens/songs/mini_player.dart';
+import 'package:nothing_music/screens/songs/now_playing_screen.dart';
+import 'package:nothing_music/screens/songs/songs_screen.dart';
 import 'package:nothing_music/screens/favourite/favourite_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 

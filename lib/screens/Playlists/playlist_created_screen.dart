@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nothing_music/db/model/Playlist_model/playlist_db_model.dart';
-import 'package:nothing_music/screens/Playlists/playlist_functions.dart';
-import 'package:nothing_music/screens/Playlists/selected_playlist_screen.dart';
+import 'package:nothing_music/screens/playlists/playlist_functions.dart';
+import 'package:nothing_music/screens/playlists/selected_playlist_screen.dart';
 
 class PlaylistCreatedScreen extends StatefulWidget {
   final Function(bool) onSongPlayed;
